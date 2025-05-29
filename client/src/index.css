@@ -3,59 +3,57 @@
 @tailwind utilities;
 
 :root {
-  /* Cozy dark theme with warm undertones */
-  --background: 12 10% 8%; /* #141414 - Deeper, warmer black */
-  --foreground: 45 100% 97%; /* #FFFEF7 - Warm white */
-  --muted: 24 15% 18%; /* #2E2B26 - Warm charcoal */
-  --muted-foreground: 35 8% 58%; /* #999085 - Warm gray */
-  --popover: 20 18% 12%; /* #1F1C18 - Warm dark brown */
-  --popover-foreground: 45 100% 97%; /* #FFFEF7 */
-  --card: 20 18% 12%; /* #1F1C18 - Warm dark brown */
-  --card-foreground: 45 100% 97%; /* #FFFEF7 */
-  --border: 24 15% 22%; /* #382F2A - Warm border */
-  --input: 24 15% 18%; /* #2E2B26 */
-  --primary: 32 95% 58%; /* #F59E0B - Warm amber */
-  --primary-foreground: 20 18% 12%; /* #1F1C18 */
-  --secondary: 24 15% 18%; /* #2E2B26 */
-  --secondary-foreground: 45 100% 97%; /* #FFFEF7 */
-  --accent: 28 88% 58%; /* #E67E22 - Warm orange */
-  --accent-foreground: 20 18% 12%; /* #1F1C18 */
-  --destructive: 0 70% 55%; /* #DC3545 */
-  --destructive-foreground: 45 100% 97%; /* #FFFEF7 */
-  --ring: 32 95% 58%; /* #F59E0B */
-  --radius: 1rem;
+  /* Sleek purple and black theme */
+  --background: 0 0% 0%; /* #000000 - Pure black */
+  --foreground: 0 0% 100%; /* #FFFFFF - Pure white */
+  --muted: 258 15% 15%; /* #1F1B2E - Dark purple gray */
+  --muted-foreground: 258 10% 65%; /* #9B96B5 - Muted purple */
+  --popover: 258 20% 8%; /* #0F0D15 - Very dark purple */
+  --popover-foreground: 0 0% 100%; /* #FFFFFF */
+  --card: 258 20% 8%; /* #0F0D15 - Very dark purple */
+  --card-foreground: 0 0% 100%; /* #FFFFFF */
+  --border: 258 15% 20%; /* #2B2438 - Purple border */
+  --input: 258 15% 15%; /* #1F1B2E */
+  --primary: 270 100% 70%; /* #8B5CF6 - Bright purple */
+  --primary-foreground: 0 0% 100%; /* #FFFFFF */
+  --secondary: 258 15% 15%; /* #1F1B2E */
+  --secondary-foreground: 0 0% 100%; /* #FFFFFF */
+  --accent: 280 85% 65%; /* #A855F7 - Violet accent */
+  --accent-foreground: 0 0% 100%; /* #FFFFFF */
+  --destructive: 0 84% 60%; /* #EF4444 */
+  --destructive-foreground: 0 0% 100%; /* #FFFFFF */
+  --ring: 270 100% 70%; /* #8B5CF6 */
+  --radius: 0.75rem;
   
-  /* Enhanced cozy colors */
-  --warm-amber: 32 95% 58%; /* #F59E0B */
-  --warm-orange: 28 88% 58%; /* #E67E22 */
-  --warm-red: 14 85% 55%; /* #D35400 */
-  --warm-yellow: 42 100% 65%; /* #F1C40F */
-  --cozy-brown: 24 30% 25%; /* #403530 */
-  --deep-brown: 20 18% 12%; /* #1F1C18 */
-  --soft-cream: 45 100% 97%; /* #FFFEF7 */
+  /* Purple theme colors */
+  --purple-primary: 270 100% 70%; /* #8B5CF6 */
+  --purple-secondary: 280 85% 65%; /* #A855F7 */
+  --purple-accent: 290 70% 60%; /* #C084FC */
+  --purple-dark: 258 20% 8%; /* #0F0D15 */
+  --purple-muted: 258 15% 15%; /* #1F1B2E */
 }
 
 .dark {
-  /* Same cozy colors for dark mode */
-  --background: 12 10% 8%; /* #141414 */
-  --foreground: 45 100% 97%; /* #FFFEF7 */
-  --muted: 24 15% 18%; /* #2E2B26 */
-  --muted-foreground: 35 8% 58%; /* #999085 */
-  --popover: 20 18% 12%; /* #1F1C18 */
-  --popover-foreground: 45 100% 97%; /* #FFFEF7 */
-  --card: 20 18% 12%; /* #1F1C18 */
-  --card-foreground: 45 100% 97%; /* #FFFEF7 */
-  --border: 24 15% 22%; /* #382F2A */
-  --input: 24 15% 18%; /* #2E2B26 */
-  --primary: 32 95% 58%; /* #F59E0B */
-  --primary-foreground: 20 18% 12%; /* #1F1C18 */
-  --secondary: 24 15% 18%; /* #2E2B26 */
-  --secondary-foreground: 45 100% 97%; /* #FFFEF7 */
-  --accent: 28 88% 58%; /* #E67E22 */
-  --accent-foreground: 20 18% 12%; /* #1F1C18 */
-  --destructive: 0 70% 55%; /* #DC3545 */
-  --destructive-foreground: 45 100% 97%; /* #FFFEF7 */
-  --ring: 32 95% 58%; /* #F59E0B */
+  /* Same purple and black theme for dark mode */
+  --background: 0 0% 0%; /* #000000 */
+  --foreground: 0 0% 100%; /* #FFFFFF */
+  --muted: 258 15% 15%; /* #1F1B2E */
+  --muted-foreground: 258 10% 65%; /* #9B96B5 */
+  --popover: 258 20% 8%; /* #0F0D15 */
+  --popover-foreground: 0 0% 100%; /* #FFFFFF */
+  --card: 258 20% 8%; /* #0F0D15 */
+  --card-foreground: 0 0% 100%; /* #FFFFFF */
+  --border: 258 15% 20%; /* #2B2438 */
+  --input: 258 15% 15%; /* #1F1B2E */
+  --primary: 270 100% 70%; /* #8B5CF6 */
+  --primary-foreground: 0 0% 100%; /* #FFFFFF */
+  --secondary: 258 15% 15%; /* #1F1B2E */
+  --secondary-foreground: 0 0% 100%; /* #FFFFFF */
+  --accent: 280 85% 65%; /* #A855F7 */
+  --accent-foreground: 0 0% 100%; /* #FFFFFF */
+  --destructive: 0 84% 60%; /* #EF4444 */
+  --destructive-foreground: 0 0% 100%; /* #FFFFFF */
+  --ring: 270 100% 70%; /* #8B5CF6 */
 }
 
 @layer base {
@@ -69,13 +67,13 @@
   }
 }
 
-/* Cozy gradient backgrounds */
-.gradient-warm {
-  background: linear-gradient(135deg, hsl(var(--warm-amber)) 0%, hsl(var(--warm-orange)) 60%, hsl(var(--warm-red)) 100%);
+/* Purple gradient backgrounds */
+.gradient-purple {
+  background: linear-gradient(135deg, hsl(var(--purple-primary)) 0%, hsl(var(--purple-secondary)) 60%, hsl(var(--purple-accent)) 100%);
 }
 
-.gradient-cozy {
-  background: linear-gradient(135deg, hsl(var(--warm-yellow)) 0%, hsl(var(--warm-amber)) 50%, hsl(var(--warm-orange)) 100%);
+.gradient-purple-soft {
+  background: linear-gradient(135deg, hsl(var(--purple-secondary)) 0%, hsl(var(--purple-accent)) 100%);
 }
 
 /* Smooth transitions for interactive elements */
@@ -85,7 +83,7 @@
 
 .transition-warm:hover {
   transform: translateY(-2px);
-  box-shadow: 0 20px 25px -5px rgba(245, 158, 11, 0.15), 0 10px 10px -5px rgba(245, 158, 11, 0.08);
+  box-shadow: 0 20px 25px -5px rgba(139, 92, 246, 0.15), 0 10px 10px -5px rgba(139, 92, 246, 0.08);
 }
 
 /* Enhanced custom scrollbar */
@@ -99,12 +97,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, hsl(var(--warm-amber)), hsl(var(--warm-orange)));
+  background: linear-gradient(180deg, hsl(var(--purple-primary)), hsl(var(--purple-secondary)));
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, hsl(var(--warm-orange)), hsl(var(--warm-red)));
+  background: linear-gradient(180deg, hsl(var(--purple-secondary)), hsl(var(--purple-accent)));
 }
 
 /* Mobile optimizations */

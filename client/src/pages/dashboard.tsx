@@ -3,7 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import { Plus, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CineNestLogo } from "@/components/CineNestLogo";
-import { StatsOverview } from "@/components/StatsOverview";
 import { SearchFilters } from "@/components/SearchFilters";
 import { MediaCard } from "@/components/MediaCard";
 import { AddMediaModal } from "@/components/AddMediaModal";
@@ -71,12 +70,17 @@ export default function Dashboard() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome Section */}
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-foreground mb-2">Welcome back to your nest</h2>
-          <p className="text-muted-foreground">Track your cinematic journey across movies, TV shows, and anime</p>
+          <h2 className="text-3xl font-bold text-foreground mb-2">Your Watchlist</h2>
+          <p className="text-muted-foreground">Discover and track movies, TV shows, and anime</p>
         </div>
 
-        {/* Stats Overview */}
-        <StatsOverview />
+        {/* Top Banner Ad Space */}
+        <div className="mb-8 bg-card border border-border rounded-xl p-6 text-center">
+          <div className="text-muted-foreground text-sm mb-2">Advertisement</div>
+          <div className="h-20 bg-muted/20 border-2 border-dashed border-muted-foreground/30 rounded-lg flex items-center justify-center">
+            <span className="text-muted-foreground">728x90 Ad Space</span>
+          </div>
+        </div>
 
         {/* Search and Filters */}
         <SearchFilters
@@ -106,7 +110,7 @@ export default function Dashboard() {
             </div>
             <Button 
               onClick={() => setAddModalOpen(true)}
-              className="gradient-warm text-[hsl(var(--deep-brown))] font-medium mobile-touch"
+              className="gradient-purple text-white font-medium mobile-touch"
             >
               <Plus className="h-4 w-4 mr-2" />
               Add Your First Item
