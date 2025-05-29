@@ -300,6 +300,7 @@ export function AddMediaModal({ open, onOpenChange }: AddMediaModalProps) {
                       placeholder="Add your thoughts..."
                       rows={3}
                       {...field}
+                      value={field.value || ""}
                       className="bg-secondary border-border text-foreground resize-none"
                     />
                   </FormControl>

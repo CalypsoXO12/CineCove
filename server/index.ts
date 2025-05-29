@@ -55,6 +55,16 @@ app.use((req, res, next) => {
 
   const server = await registerRoutes(app);
 
+  // Add health check endpoint for deployment verification
+  app.get("/health", (req, res) => {
+    res.json({ 
+      status: "healthy", 
+      timestamp: new Date().toISOString(),
+      env: process.env.NODE_ENV,
+      tmdbConfigured: !!process.env.TMDB_API_KEY
+    });
+  });
+
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route
   // doesn't interfere with the other routes

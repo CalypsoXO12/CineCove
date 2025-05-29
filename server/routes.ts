@@ -119,7 +119,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (!response.ok) {
         console.error(`TMDB API error: ${response.status} ${response.statusText}`);
-        return res.status(response.status).json({ message: `TMDB API error: ${response.status}` });
+        // Return empty array for graceful degradation
+        return res.json([]);
       }
       
       const data = await response.json();
@@ -129,7 +130,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(results);
     } catch (error) {
       console.error("TMDB search error:", error);
-      res.status(500).json({ message: "Failed to search TMDB" });
+      // Return empty array instead of error for graceful degradation
+      res.json([]);
     }
   });
 

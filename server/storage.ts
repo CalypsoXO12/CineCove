@@ -385,8 +385,18 @@ export class MemStorage implements IStorage {
 
   async createAdminPick(pick: InsertAdminPick): Promise<AdminPick> {
     const adminPick: AdminPick = {
-      ...pick,
       id: Date.now(),
+      title: pick.title,
+      type: pick.type,
+      status: pick.status || "featured",
+      rating: pick.rating ?? null,
+      notes: pick.notes ?? null,
+      posterUrl: pick.posterUrl ?? null,
+      tmdbId: pick.tmdbId ?? null,
+      jikanId: pick.jikanId ?? null,
+      genre: pick.genre ?? null,
+      year: pick.year ?? null,
+      isFeatured: pick.isFeatured ?? true,
       createdAt: new Date(),
     };
     return adminPick;
