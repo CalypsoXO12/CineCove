@@ -85,7 +85,7 @@ export default function AdminPanel({ user }: AdminPanelProps) {
 
   // Create announcement
   const createAnnouncementMutation = useMutation({
-    mutationFn: async (data: { title: string; content: string; userId: number }) => {
+    mutationFn: async (data: { title: string; content: string; adminId: number }) => {
       const response = await fetch("/api/announcements", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -152,7 +152,7 @@ export default function AdminPanel({ user }: AdminPanelProps) {
 
   const handleCreateAnnouncement = (e: React.FormEvent) => {
     e.preventDefault();
-    createAnnouncementMutation.mutate({ ...announcementForm, userId: user.id });
+    createAnnouncementMutation.mutate({ ...announcementForm, adminId: user.id });
   };
 
   const handleCreateUpcoming = (e: React.FormEvent) => {
