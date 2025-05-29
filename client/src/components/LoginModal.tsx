@@ -24,6 +24,17 @@ export function LoginModal({ open, onOpenChange, onLoginSuccess }: LoginModalPro
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
+  // Get registered users from localStorage
+  const getRegisteredUsers = () => {
+    const users = localStorage.getItem('cinecove_registered_users');
+    return users ? JSON.parse(users) : [];
+  };
+
+  // Save registered users to localStorage
+  const saveRegisteredUsers = (users: any[]) => {
+    localStorage.setItem('cinecove_registered_users', JSON.stringify(users));
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -38,7 +49,6 @@ export function LoginModal({ open, onOpenChange, onLoginSuccess }: LoginModalPro
 
     setIsLoading(true);
 
-    // Hardcoded authentication for immediate functionality
     const username = loginForm.username.trim();
     const password = loginForm.password;
 
@@ -55,10 +65,12 @@ export function LoginModal({ open, onOpenChange, onLoginSuccess }: LoginModalPro
       return;
     }
 
-    // For any other username/password, create a regular user
-    if (username.length >= 3 && password.length >= 3) {
-      const userId = Math.floor(Math.random() * 1000) + 100; // Generate random user ID
-      onLoginSuccess(userId, false);
+    // Check registered users
+    const registeredUsers = getRegisteredUsers();
+    const user = registeredUsers.find((u: any) => u.username === username && u.password === password);
+
+    if (user) {
+      onLoginSuccess(user.userId, false);
       onOpenChange(false);
       setLoginForm({ username: "", password: "" });
       toast({
@@ -71,7 +83,7 @@ export function LoginModal({ open, onOpenChange, onLoginSuccess }: LoginModalPro
 
     toast({
       title: "Login failed",
-      description: "Username and password must be at least 3 characters.",
+      description: "Invalid username or password.",
       variant: "destructive",
     });
     setIsLoading(false);
@@ -109,8 +121,28 @@ export function LoginModal({ open, onOpenChange, onLoginSuccess }: LoginModalPro
 
     setIsLoading(true);
 
-    // Simple registration - create account immediately
-    const userId = Math.floor(Math.random() * 1000) + 100; // Generate random user ID
+    const username = registerForm.username.trim();
+    const password = registerForm.password;
+
+    // Check if username already exists
+    const registeredUsers = getRegisteredUsers();
+    if (registeredUsers.some((u: any) => u.username === username) || username === "Calypso") {
+      toast({
+        title: "Registration failed",
+        description: "Username already exists. Please choose a different one.",
+        variant: "destructive",
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    // Create new user
+    const userId = Math.floor(Math.random() * 1000) + 100;
+    const newUser = { username, password, userId };
+    
+    registeredUsers.push(newUser);
+    saveRegisteredUsers(registeredUsers);
+
     onLoginSuccess(userId, false);
     onOpenChange(false);
     setRegisterForm({ username: "", password: "", confirmPassword: "" });
