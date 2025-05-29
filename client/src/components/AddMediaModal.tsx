@@ -153,7 +153,7 @@ export function AddMediaModal({ open, onOpenChange }: AddMediaModalProps) {
                     onClick={() => handleTypeChange(type as "movie" | "tv" | "anime")}
                     className={
                       selectedType === type
-                        ? "gradient-warm text-[hsl(var(--dark-primary))] font-medium"
+                        ? "gradient-purple text-white font-medium"
                         : "bg-card border-border text-muted-foreground"
                     }
                   >

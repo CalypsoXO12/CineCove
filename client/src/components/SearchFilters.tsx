@@ -44,7 +44,7 @@ export function SearchFilters({
           placeholder="Search your watchlist..."
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="pl-12 bg-card border-border rounded-xl py-3 text-foreground placeholder-muted-foreground focus:border-[hsl(var(--warm-amber))] focus:ring-1 focus:ring-[hsl(var(--warm-amber))] transition-colors"
+          className="pl-12 bg-card border-border rounded-xl py-3 text-foreground placeholder-muted-foreground focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors"
         />
       </div>
 
@@ -60,7 +60,7 @@ export function SearchFilters({
               onClick={() => onTypeChange(filter.id)}
               className={
                 activeType === filter.id
-                  ? "gradient-warm text-[hsl(var(--dark-primary))] font-medium"
+                  ? "gradient-purple text-white font-medium"
                   : "bg-card border-border text-muted-foreground hover:bg-secondary hover:text-foreground"
               }
             >
@@ -79,7 +79,7 @@ export function SearchFilters({
               onClick={() => onStatusChange(filter.id)}
               className={
                 activeStatus === filter.id
-                  ? "gradient-warm text-[hsl(var(--dark-primary))] font-medium"
+                  ? "gradient-purple text-white font-medium"
                   : "bg-card border-border text-muted-foreground hover:bg-secondary hover:text-foreground"
               }
             >

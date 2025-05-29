@@ -38,13 +38,13 @@ export default function Dashboard() {
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
-              <a href="#" className="text-[hsl(var(--warm-amber))] font-medium border-b-2 border-[hsl(var(--warm-amber))] pb-1">
+              <a href="#" className="text-purple-400 font-medium border-b-2 border-purple-400 pb-1">
                 Dashboard
               </a>
-              <a href="#" className="text-muted-foreground hover:text-[hsl(var(--warm-amber))] transition-colors">
-                Statistics
+              <a href="#" className="text-muted-foreground hover:text-purple-400 transition-colors">
+                Browse
               </a>
-              <a href="#" className="text-muted-foreground hover:text-[hsl(var(--warm-amber))] transition-colors">
+              <a href="#" className="text-muted-foreground hover:text-purple-400 transition-colors">
                 Settings
               </a>
             </nav>
@@ -53,13 +53,13 @@ export default function Dashboard() {
             <div className="flex items-center space-x-4">
               <Button 
                 onClick={() => setAddModalOpen(true)}
-                className="gradient-warm text-[hsl(var(--dark-primary))] font-medium transition-all hover:shadow-lg flex items-center space-x-2"
+                className="gradient-purple text-white font-medium transition-all hover:shadow-lg flex items-center space-x-2"
               >
                 <Plus className="h-4 w-4" />
                 <span className="hidden sm:inline">Add Media</span>
               </Button>
-              <div className="w-8 h-8 bg-gradient-to-br from-[hsl(var(--warm-orange))] to-[hsl(var(--warm-brown))] rounded-full flex items-center justify-center">
-                <User className="text-[hsl(var(--dark-primary))] h-4 w-4" />
+              <div className="w-8 h-8 gradient-purple-soft rounded-full flex items-center justify-center">
+                <User className="text-white h-4 w-4" />
               </div>
             </div>
           </div>
@@ -117,10 +117,33 @@ export default function Dashboard() {
             </Button>
           </div>
         ) : (
-          <div className="grid mobile-card-grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4 mb-8">
-            {mediaItems.map((item: MediaItem) => (
-              <MediaCard key={item.id} item={item} />
-            ))}
+          <div className="flex gap-8">
+            {/* Sidebar Ad Space */}
+            <div className="hidden lg:block w-60 flex-shrink-0">
+              <div className="bg-card border border-border rounded-xl p-4 text-center sticky top-24">
+                <div className="text-muted-foreground text-xs mb-2">Advertisement</div>
+                <div className="h-96 bg-muted/20 border-2 border-dashed border-muted-foreground/30 rounded-lg flex items-center justify-center">
+                  <span className="text-muted-foreground text-sm">160x600 Ad Space</span>
+                </div>
+              </div>
+            </div>
+            
+            {/* Media Grid */}
+            <div className="flex-1">
+              <div className="grid mobile-card-grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4 mb-8">
+                {mediaItems.map((item: MediaItem) => (
+                  <MediaCard key={item.id} item={item} />
+                ))}
+              </div>
+              
+              {/* Bottom Ad Space */}
+              <div className="bg-card border border-border rounded-xl p-6 text-center mt-8">
+                <div className="text-muted-foreground text-sm mb-2">Advertisement</div>
+                <div className="h-24 bg-muted/20 border-2 border-dashed border-muted-foreground/30 rounded-lg flex items-center justify-center">
+                  <span className="text-muted-foreground">728x90 Ad Space</span>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </main>
@@ -130,26 +153,26 @@ export default function Dashboard() {
         <Button
           onClick={() => setAddModalOpen(true)}
           size="lg"
-          className="w-14 h-14 gradient-warm rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-200 flex items-center justify-center p-0"
+          className="w-14 h-14 gradient-purple rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-200 flex items-center justify-center p-0"
         >
-          <Plus className="text-[hsl(var(--dark-primary))] h-6 w-6" />
+          <Plus className="text-white h-6 w-6" />
         </Button>
       </div>
 
       {/* Mobile Bottom Navigation */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-md border-t border-border z-40 safe-area-inset-bottom">
         <div className="flex justify-around py-3 px-2">
-          <button className="flex flex-col items-center py-2 px-3 text-amber-400 mobile-touch rounded-xl bg-amber-400/10">
+          <button className="flex flex-col items-center py-2 px-3 text-purple-400 mobile-touch rounded-xl bg-purple-400/10">
             <div className="text-lg mb-1">🏠</div>
             <span className="text-xs font-medium">Home</span>
           </button>
           <button className="flex flex-col items-center py-2 px-3 text-muted-foreground mobile-touch rounded-xl hover:bg-muted/50 transition-colors">
             <div className="text-lg mb-1">🔍</div>
-            <span className="text-xs">Search</span>
+            <span className="text-xs">Browse</span>
           </button>
           <button className="flex flex-col items-center py-2 px-3 text-muted-foreground mobile-touch rounded-xl hover:bg-muted/50 transition-colors">
-            <div className="text-lg mb-1">📊</div>
-            <span className="text-xs">Stats</span>
+            <div className="text-lg mb-1">📝</div>
+            <span className="text-xs">List</span>
           </button>
           <button className="flex flex-col items-center py-2 px-3 text-muted-foreground mobile-touch rounded-xl hover:bg-muted/50 transition-colors">
             <div className="text-lg mb-1">👤</div>
