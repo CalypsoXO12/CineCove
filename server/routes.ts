@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertMediaItemSchema, type TMDBSearchResult, type JikanSearchResult } from "@shared/schema";
+import { insertMediaItemSchema, insertAnnouncementSchema, insertUpcomingReleaseSchema, type TMDBSearchResult, type JikanSearchResult } from "@shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -177,6 +177,70 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(stats);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch statistics" });
+    }
+  });
+
+  // Admin login
+  app.post("/api/admin/login", async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      
+      const admin = await storage.getAdminByUsername(username);
+      if (!admin || admin.password !== password) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+      
+      res.json({ success: true, adminId: admin.id });
+    } catch (error) {
+      res.status(500).json({ message: "Login failed" });
+    }
+  });
+
+  // Get announcements
+  app.get("/api/announcements", async (req, res) => {
+    try {
+      const announcements = await storage.getAnnouncements();
+      res.json(announcements);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch announcements" });
+    }
+  });
+
+  // Create announcement
+  app.post("/api/announcements", async (req, res) => {
+    try {
+      const validatedData = insertAnnouncementSchema.parse(req.body);
+      const announcement = await storage.createAnnouncement(validatedData);
+      res.json(announcement);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to create announcement" });
+    }
+  });
+
+  // Get upcoming releases
+  app.get("/api/upcoming", async (req, res) => {
+    try {
+      const releases = await storage.getUpcomingReleases();
+      res.json(releases);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch upcoming releases" });
+    }
+  });
+
+  // Create upcoming release
+  app.post("/api/upcoming", async (req, res) => {
+    try {
+      const validatedData = insertUpcomingReleaseSchema.parse(req.body);
+      const release = await storage.createUpcomingRelease(validatedData);
+      res.json(release);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to create upcoming release" });
     }
   });
 

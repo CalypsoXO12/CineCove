@@ -119,6 +119,47 @@ export default function Home() {
 
           {/* Content Sections */}
           <div className="flex-1">
+            {/* Upcoming Anticipated Releases */}
+            <section className="mb-12">
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="w-8 h-8 gradient-purple rounded-lg flex items-center justify-center">
+                  <Clock className="text-white h-4 w-4" />
+                </div>
+                <h2 className="text-2xl font-bold text-foreground">Coming Soon</h2>
+              </div>
+              
+              <div className="grid mobile-card-grid sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-4">
+                {upcomingReleases.slice(0, 8).map((release: UpcomingRelease) => (
+                  <div key={release.id} className="bg-card rounded-2xl overflow-hidden border border-border hover:border-purple-500/50 transition-all duration-300 group">
+                    <div className="aspect-[2/3] relative overflow-hidden">
+                      <img 
+                        src={release.posterUrl || "/placeholder-poster.jpg"} 
+                        alt={release.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      {release.isHighlighted && (
+                        <div className="absolute top-2 right-2 bg-gradient-to-r from-purple-500 to-violet-600 text-white text-xs px-2 py-1 rounded-full">
+                          Featured
+                        </div>
+                      )}
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
+                        <p className="text-white text-xs font-medium">
+                          {release.releaseDate ? new Date(release.releaseDate).toLocaleDateString() : 'TBA'}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="p-3">
+                      <h3 className="font-semibold text-foreground text-sm mb-1 line-clamp-2">{release.title}</h3>
+                      <p className="text-muted-foreground text-xs capitalize">{release.type}</p>
+                      {release.description && (
+                        <p className="text-muted-foreground text-xs mt-2 line-clamp-2">{release.description}</p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
             {/* Admin Picks */}
             <section className="mb-12">
               <div className="flex items-center space-x-3 mb-6">
