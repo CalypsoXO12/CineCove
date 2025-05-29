@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: cinecove
+    env: node
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: cinecove-db
+          property: connectionString
+      - key: TMDB_API_KEY
+        sync: false
+
+databases:
+  - name: cinecove-db
+    databaseName: cinecove
+    user: cinecove
+    plan: free
