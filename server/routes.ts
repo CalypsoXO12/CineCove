@@ -106,7 +106,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const apiKey = process.env.TMDB_API_KEY;
       if (!apiKey) {
         console.error("TMDB_API_KEY not found in environment variables");
-        return res.status(500).json({ message: "TMDB API key not configured" });
+        // Return empty array instead of error for graceful degradation
+        return res.json([]);
       }
 
       const endpoint = type === "tv" ? "tv" : "movie";

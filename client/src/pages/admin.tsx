@@ -87,19 +87,35 @@ export default function AdminPanel({ user }: AdminPanelProps) {
 
   // Create announcement
   const createAnnouncementMutation = useMutation({
-    mutationFn: async (data: { title: string; content: string; adminId: number }) => {
+    mutationFn: async (data: { title: string; content: string }) => {
       console.log("Creating announcement with data:", data);
+      
+      const payload = {
+        title: data.title.trim(),
+        content: data.content.trim(),
+        adminId: user?.id || 1
+      };
+      
+      console.log("Sending payload:", payload);
+      
       const response = await fetch("/api/announcements", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
+        headers: { 
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify(payload)
       });
+      
       if (!response.ok) {
         const errorText = await response.text();
-        console.error("Announcement creation failed:", errorText);
-        throw new Error(`Failed to create announcement: ${errorText}`);
+        console.error("Announcement creation failed:", response.status, errorText);
+        throw new Error(`Failed to create announcement: ${response.status} ${errorText}`);
       }
-      return response.json();
+      
+      const result = await response.json();
+      console.log("Announcement created successfully:", result);
+      return result;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/announcements"] });
