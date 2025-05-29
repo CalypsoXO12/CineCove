@@ -1,4 +1,5 @@
 import express, { type Request, Response, NextFunction } from "express";
+import path from "path";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { seedDatabase } from "./seed";
@@ -61,7 +62,17 @@ app.use((req, res, next) => {
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
-    serveStatic(app);
+    try {
+      serveStatic(app);
+    } catch (error) {
+      console.log("Static serving failed, using basic static setup:", (error as Error).message);
+      // Fallback static serving for production deployment
+      const publicPath = path.join(process.cwd(), "dist", "public");
+      app.use(express.static(publicPath));
+      app.get("*", (_req, res) => {
+        res.sendFile(path.join(publicPath, "index.html"));
+      });
+    }
   }
 
   // ALWAYS serve the app on port 5000
