@@ -25,28 +25,29 @@ export const insertMediaItemSchema = createInsertSchema(mediaItems).omit({
 export type InsertMediaItem = z.infer<typeof insertMediaItemSchema>;
 export type MediaItem = typeof mediaItems.$inferSelect;
 
-// Admin users table
-export const adminUsers = pgTable("admin_users", {
+// Users table with admin role
+export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
+  isAdmin: boolean("is_admin").default(false),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const insertAdminUserSchema = createInsertSchema(adminUsers).omit({
+export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
 });
 
-export type InsertAdminUser = z.infer<typeof insertAdminUserSchema>;
-export type AdminUser = typeof adminUsers.$inferSelect;
+export type InsertUser = z.infer<typeof insertUserSchema>;
+export type User = typeof users.$inferSelect;
 
 // Announcements table
 export const announcements = pgTable("announcements", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
   content: text("content").notNull(),
-  adminId: integer("admin_id").notNull(),
+  userId: integer("user_id").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -69,7 +70,7 @@ export const upcomingReleases = pgTable("upcoming_releases", {
   jikanId: integer("jikan_id"),
   description: text("description"),
   isHighlighted: boolean("is_highlighted").default(false),
-  adminId: integer("admin_id").notNull(),
+  userId: integer("user_id").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

@@ -1,12 +1,12 @@
 import { 
   mediaItems, 
-  adminUsers, 
+  users, 
   announcements, 
   upcomingReleases,
   type MediaItem, 
   type InsertMediaItem,
-  type AdminUser,
-  type InsertAdminUser,
+  type User,
+  type InsertUser,
   type Announcement,
   type InsertAnnouncement,
   type UpcomingRelease,
@@ -25,9 +25,9 @@ export interface IStorage {
   getMediaItemsByType(type: string): Promise<MediaItem[]>;
   searchMediaItems(query: string): Promise<MediaItem[]>;
   
-  // Admin functions
-  getAdminByUsername(username: string): Promise<AdminUser | undefined>;
-  createAdmin(admin: InsertAdminUser): Promise<AdminUser>;
+  // User functions
+  getUserByUsername(username: string): Promise<User | undefined>;
+  createUser(user: InsertUser): Promise<User>;
   
   // Announcements
   getAnnouncements(): Promise<Announcement[]>;
@@ -106,15 +106,15 @@ export class DatabaseStorage implements IStorage {
     return items;
   }
 
-  // Admin functions
-  async getAdminByUsername(username: string): Promise<AdminUser | undefined> {
-    const [admin] = await db.select().from(adminUsers).where(eq(adminUsers.username, username));
-    return admin || undefined;
+  // User functions
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
   }
 
-  async createAdmin(insertAdmin: InsertAdminUser): Promise<AdminUser> {
-    const [admin] = await db.insert(adminUsers).values(insertAdmin).returning();
-    return admin;
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db.insert(users).values(insertUser).returning();
+    return user;
   }
 
   // Announcements
@@ -314,13 +314,13 @@ export class MemStorage implements IStorage {
       .sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime());
   }
 
-  // Admin functions - not implemented for memory storage
-  async getAdminByUsername(username: string): Promise<AdminUser | undefined> {
-    throw new Error("Admin functions not supported in memory storage");
+  // User functions - not implemented for memory storage
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    throw new Error("User functions not supported in memory storage");
   }
 
-  async createAdmin(admin: InsertAdminUser): Promise<AdminUser> {
-    throw new Error("Admin functions not supported in memory storage");
+  async createUser(user: InsertUser): Promise<User> {
+    throw new Error("User functions not supported in memory storage");
   }
 
   // Announcements - not implemented for memory storage
