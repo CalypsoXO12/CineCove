@@ -13,10 +13,11 @@ import { useToast } from "@/hooks/use-toast";
 import { CineCoveLogo } from "@/components/CineNestLogo";
 import type { Announcement, UpcomingRelease, MediaItem } from "@shared/schema";
 
-export default function AdminPanel() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [adminId, setAdminId] = useState<number | null>(null);
-  const [loginForm, setLoginForm] = useState({ username: "", password: "" });
+interface AdminPanelProps {
+  user: { id: number; isAdmin: boolean } | null;
+}
+
+export default function AdminPanel({ user }: AdminPanelProps) {
   const [announcementForm, setAnnouncementForm] = useState({ title: "", content: "" });
   const [upcomingForm, setUpcomingForm] = useState({
     title: "",

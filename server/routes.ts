@@ -187,12 +187,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const user = await storage.getUserByUsername(username);
       if (!user || user.password !== password) {
-        return res.status(401).json({ message: "Invalid credentials" });
+        return res.status(401).json({ success: false, message: "Invalid credentials" });
       }
       
       res.json({ success: true, userId: user.id, isAdmin: user.isAdmin });
     } catch (error) {
-      res.status(500).json({ message: "Login failed" });
+      res.status(500).json({ success: false, message: "Login failed" });
+    }
+  });
+
+  // User registration
+  app.post("/api/register", async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      
+      // Check if username already exists
+      const existingUser = await storage.getUserByUsername(username);
+      if (existingUser) {
+        return res.status(409).json({ success: false, message: "Username already taken" });
+      }
+      
+      // Create new user
+      const newUser = await storage.createUser({
+        username,
+        password,
+        isAdmin: false
+      });
+      
+      res.json({ success: true, userId: newUser.id, isAdmin: newUser.isAdmin });
+    } catch (error) {
+      res.status(500).json({ success: false, message: "Registration failed" });
     }
   });
 

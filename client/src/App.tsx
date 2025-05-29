@@ -5,17 +5,18 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { LoginModal } from "@/components/LoginModal";
+import { Navigation } from "@/components/Navigation";
 import Home from "@/pages/home";
 import Dashboard from "@/pages/dashboard";
 import AdminPanel from "@/pages/admin";
 import NotFound from "@/pages/not-found";
 
-function Router({ user, onLogout }: { user: { id: number; isAdmin: boolean } | null; onLogout: () => void }) {
+function Router({ user }: { user: { id: number; isAdmin: boolean } | null }) {
   return (
     <Switch>
-      <Route path="/" component={() => <Home user={user} onLogout={onLogout} />} />
-      <Route path="/dashboard" component={() => <Dashboard user={user} onLogout={onLogout} />} />
-      <Route path="/admin" component={() => <AdminPanel user={user} onLogout={onLogout} />} />
+      <Route path="/" component={Home} />
+      <Route path="/dashboard" component={Dashboard} />
+      <Route path="/admin" component={() => <AdminPanel user={user} />} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -33,12 +34,21 @@ function App() {
     setUser(null);
   };
 
+  const handleShowLogin = () => {
+    setShowLoginModal(true);
+  };
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <div className="dark">
           <Toaster />
-          <Router user={user} onLogout={handleLogout} />
+          <Navigation 
+            user={user} 
+            onLogin={handleShowLogin}
+            onLogout={handleLogout}
+          />
+          <Router user={user} />
           <LoginModal 
             open={showLoginModal} 
             onOpenChange={setShowLoginModal}
