@@ -112,6 +112,7 @@ app.delete("/api/media/:id", async (req, res) => {
 app.get("/api/search/tmdb", async (req, res) => {
   try {
     const { query, type = "movie" } = req.query;
+    console.log("TMDB search request:", { query, type });
     
     if (!query) {
       return res.status(400).json({ message: "Query parameter is required" });
@@ -119,27 +120,29 @@ app.get("/api/search/tmdb", async (req, res) => {
 
     const apiKey = process.env.TMDB_API_KEY;
     if (!apiKey) {
-      console.error("TMDB_API_KEY not found in environment variables");
-      return res.json([]);
+      console.error("TMDB_API_KEY not configured");
+      return res.status(500).json({ message: "TMDB API key not configured" });
     }
 
     const endpoint = type === "tv" ? "tv" : "movie";
     const url = `https://api.themoviedb.org/3/search/${endpoint}?api_key=${apiKey}&query=${encodeURIComponent(query as string)}`;
+    console.log("Searching TMDB:", url);
     
     const response = await fetch(url);
     
     if (!response.ok) {
       console.error(`TMDB API error: ${response.status} ${response.statusText}`);
-      return res.json([]);
+      return res.status(response.status).json({ message: "TMDB API error" });
     }
     
     const data = await response.json();
-    const results: TMDBSearchResult[] = data.results?.slice(0, 10) || [];
+    const results = data.results?.slice(0, 10) || [];
+    console.log(`Found ${results.length} TMDB results`);
     
     res.json(results);
   } catch (error) {
     console.error("TMDB search error:", error);
-    res.json([]);
+    res.status(500).json({ message: "Search failed" });
   }
 });
 
