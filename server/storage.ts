@@ -1,4 +1,17 @@
-import { mediaItems, type MediaItem, type InsertMediaItem } from "@shared/schema";
+import { 
+  mediaItems, 
+  adminUsers, 
+  announcements, 
+  upcomingReleases,
+  type MediaItem, 
+  type InsertMediaItem,
+  type AdminUser,
+  type InsertAdminUser,
+  type Announcement,
+  type InsertAnnouncement,
+  type UpcomingRelease,
+  type InsertUpcomingRelease
+} from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, like, or } from "drizzle-orm";
 
@@ -11,6 +24,20 @@ export interface IStorage {
   getMediaItemsByStatus(status: string): Promise<MediaItem[]>;
   getMediaItemsByType(type: string): Promise<MediaItem[]>;
   searchMediaItems(query: string): Promise<MediaItem[]>;
+  
+  // Admin functions
+  getAdminByUsername(username: string): Promise<AdminUser | undefined>;
+  createAdmin(admin: InsertAdminUser): Promise<AdminUser>;
+  
+  // Announcements
+  getAnnouncements(): Promise<Announcement[]>;
+  createAnnouncement(announcement: InsertAnnouncement): Promise<Announcement>;
+  deleteAnnouncement(id: number): Promise<boolean>;
+  
+  // Upcoming releases
+  getUpcomingReleases(): Promise<UpcomingRelease[]>;
+  createUpcomingRelease(release: InsertUpcomingRelease): Promise<UpcomingRelease>;
+  deleteUpcomingRelease(id: number): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -77,6 +104,49 @@ export class DatabaseStorage implements IStorage {
       )
       .orderBy(desc(mediaItems.createdAt));
     return items;
+  }
+
+  // Admin functions
+  async getAdminByUsername(username: string): Promise<AdminUser | undefined> {
+    const [admin] = await db.select().from(adminUsers).where(eq(adminUsers.username, username));
+    return admin || undefined;
+  }
+
+  async createAdmin(insertAdmin: InsertAdminUser): Promise<AdminUser> {
+    const [admin] = await db.insert(adminUsers).values(insertAdmin).returning();
+    return admin;
+  }
+
+  // Announcements
+  async getAnnouncements(): Promise<Announcement[]> {
+    const items = await db.select().from(announcements).orderBy(desc(announcements.createdAt));
+    return items;
+  }
+
+  async createAnnouncement(insertAnnouncement: InsertAnnouncement): Promise<Announcement> {
+    const [announcement] = await db.insert(announcements).values(insertAnnouncement).returning();
+    return announcement;
+  }
+
+  async deleteAnnouncement(id: number): Promise<boolean> {
+    const result = await db.delete(announcements).where(eq(announcements.id, id));
+    return result.rowCount > 0;
+  }
+
+  // Upcoming releases
+  async getUpcomingReleases(): Promise<UpcomingRelease[]> {
+    const items = await db.select().from(upcomingReleases).orderBy(desc(upcomingReleases.releaseDate));
+    return items;
+  }
+
+  async createUpcomingRelease(insertRelease: InsertUpcomingRelease): Promise<UpcomingRelease> {
+    const [release] = await db.insert(upcomingReleases).values(insertRelease).returning();
+    return release;
+  }
+
+  async deleteUpcomingRelease(id: number): Promise<boolean> {
+    const result = await db.delete(upcomingReleases).where(eq(upcomingReleases.id, id));
+    return result.rowCount > 0;
   }
 }
 
@@ -242,6 +312,41 @@ export class MemStorage implements IStorage {
         item.notes?.toLowerCase().includes(lowercaseQuery)
       )
       .sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime());
+  }
+
+  // Admin functions - not implemented for memory storage
+  async getAdminByUsername(username: string): Promise<AdminUser | undefined> {
+    throw new Error("Admin functions not supported in memory storage");
+  }
+
+  async createAdmin(admin: InsertAdminUser): Promise<AdminUser> {
+    throw new Error("Admin functions not supported in memory storage");
+  }
+
+  // Announcements - not implemented for memory storage
+  async getAnnouncements(): Promise<Announcement[]> {
+    return [];
+  }
+
+  async createAnnouncement(announcement: InsertAnnouncement): Promise<Announcement> {
+    throw new Error("Announcement functions not supported in memory storage");
+  }
+
+  async deleteAnnouncement(id: number): Promise<boolean> {
+    throw new Error("Announcement functions not supported in memory storage");
+  }
+
+  // Upcoming releases - not implemented for memory storage
+  async getUpcomingReleases(): Promise<UpcomingRelease[]> {
+    return [];
+  }
+
+  async createUpcomingRelease(release: InsertUpcomingRelease): Promise<UpcomingRelease> {
+    throw new Error("Upcoming release functions not supported in memory storage");
+  }
+
+  async deleteUpcomingRelease(id: number): Promise<boolean> {
+    throw new Error("Upcoming release functions not supported in memory storage");
   }
 }
 
