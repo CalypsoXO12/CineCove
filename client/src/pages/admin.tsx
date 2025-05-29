@@ -31,49 +31,49 @@ export default function AdminPanel({ user }: AdminPanelProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Login mutation
-  const loginMutation = useMutation({
-    mutationFn: async (credentials: { username: string; password: string }) => {
-      const response = await fetch("/api/admin/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(credentials)
-      });
-      if (!response.ok) throw new Error("Invalid credentials");
-      return response.json();
-    },
-    onSuccess: (data) => {
-      setIsLoggedIn(true);
-      setAdminId(data.adminId);
-      toast({ title: "Logged in successfully" });
-    },
-    onError: () => {
-      toast({ title: "Login failed", description: "Invalid credentials", variant: "destructive" });
-    }
-  });
+  // Check if user has admin access
+  if (!user || !user.isAdmin) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Card className="w-full max-w-md mx-4">
+          <CardHeader className="text-center">
+            <div className="flex justify-center mb-4">
+              <CineCoveLogo />
+            </div>
+            <CardTitle className="text-amber-400">Captain's Quarters</CardTitle>
+            <p className="text-muted-foreground mt-2">
+              This area is restricted to authorized personnel only.
+            </p>
+          </CardHeader>
+          <CardContent className="text-center">
+            <p className="text-sm text-muted-foreground">
+              Please sign in with captain credentials to access the admin panel.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   // Fetch data
   const { data: announcements = [] } = useQuery({
     queryKey: ["/api/announcements"],
-    queryFn: () => fetch("/api/announcements").then(res => res.json()),
-    enabled: isLoggedIn
+    queryFn: () => fetch("/api/announcements").then(res => res.json())
   });
 
   const { data: upcomingReleases = [] } = useQuery({
     queryKey: ["/api/upcoming"],
-    queryFn: () => fetch("/api/upcoming").then(res => res.json()),
-    enabled: isLoggedIn
+    queryFn: () => fetch("/api/upcoming").then(res => res.json())
   });
 
   const { data: mediaItems = [] } = useQuery({
     queryKey: ["/api/media"],
-    queryFn: () => fetch("/api/media").then(res => res.json()),
-    enabled: isLoggedIn
+    queryFn: () => fetch("/api/media").then(res => res.json())
   });
 
   // Create announcement
   const createAnnouncementMutation = useMutation({
-    mutationFn: async (data: { title: string; content: string; adminId: number }) => {
+    mutationFn: async (data: { title: string; content: string; userId: number }) => {
       const response = await fetch("/api/announcements", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -107,7 +107,7 @@ export default function AdminPanel({ user }: AdminPanelProps) {
       const response = await fetch("/api/upcoming", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, adminId })
+        body: JSON.stringify({ ...data, userId: user.id })
       });
       if (!response.ok) throw new Error("Failed to create upcoming release");
       return response.json();
@@ -138,90 +138,29 @@ export default function AdminPanel({ user }: AdminPanelProps) {
     }
   });
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    loginMutation.mutate(loginForm);
-  };
-
   const handleCreateAnnouncement = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!adminId) return;
-    createAnnouncementMutation.mutate({ ...announcementForm, adminId });
+    createAnnouncementMutation.mutate({ ...announcementForm, userId: user.id });
   };
 
   const handleCreateUpcoming = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!adminId) return;
     createUpcomingMutation.mutate(upcomingForm);
   };
-
-  if (!isLoggedIn) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Card className="w-full max-w-md mx-4">
-          <CardHeader className="text-center">
-            <div className="flex justify-center mb-4">
-              <CineCoveLogo />
-            </div>
-            <CardTitle>Admin Login</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div>
-                <Label htmlFor="username">Username</Label>
-                <Input
-                  id="username"
-                  type="text"
-                  value={loginForm.username}
-                  onChange={(e) => setLoginForm(prev => ({ ...prev, username: e.target.value }))}
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={loginForm.password}
-                  onChange={(e) => setLoginForm(prev => ({ ...prev, password: e.target.value }))}
-                  required
-                />
-              </div>
-              <Button 
-                type="submit" 
-                className="w-full gradient-purple text-white"
-                disabled={loginMutation.isPending}
-              >
-                {loginMutation.isPending ? "Logging in..." : "Login"}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-card/80 backdrop-blur-sm border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-4">
-              <CineCoveLogo />
-              <h1 className="text-xl font-bold text-foreground">Admin Panel</h1>
+      <div className="bg-card/80 backdrop-blur-sm border-b border-border">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold text-amber-400">Captain's Quarters</h1>
+            <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+              <span>Welcome, Captain</span>
             </div>
-            <Button 
-              onClick={() => setIsLoggedIn(false)}
-              variant="outline"
-              className="flex items-center space-x-2"
-            >
-              <LogOut className="h-4 w-4" />
-              <span>Logout</span>
-            </Button>
           </div>
         </div>
-      </header>
+      </div>
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

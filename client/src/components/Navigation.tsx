@@ -27,7 +27,7 @@ export function Navigation({ user, onLogin, onLogout }: NavigationProps) {
                 <span className={`text-sm font-medium transition-colors hover:text-cove-blue ${
                   location === "/" ? "text-cove-blue" : "text-muted-foreground"
                 }`}>
-                  Tide Pool
+                  Home
                 </span>
               </Link>
               
