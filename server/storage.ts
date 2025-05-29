@@ -374,6 +374,24 @@ export class MemStorage implements IStorage {
   async deleteUpcomingRelease(id: number): Promise<boolean> {
     throw new Error("Upcoming release functions not supported in memory storage");
   }
+
+  // Admin Picks - simplified for MemStorage
+  async getAdminPicks(): Promise<AdminPick[]> {
+    return [];
+  }
+
+  async createAdminPick(pick: InsertAdminPick): Promise<AdminPick> {
+    const adminPick: AdminPick = {
+      ...pick,
+      id: Date.now(),
+      createdAt: new Date(),
+    };
+    return adminPick;
+  }
+
+  async deleteAdminPick(id: number): Promise<boolean> {
+    return true;
+  }
 }
 
 export const storage = new DatabaseStorage();

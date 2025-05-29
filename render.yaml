@@ -15,6 +15,7 @@ services:
           property: connectionString
       - key: TMDB_API_KEY
         sync: false
+    region: oregon
 
 databases:
   - name: cinecove-db

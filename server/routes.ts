@@ -104,13 +104,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const apiKey = process.env.TMDB_API_KEY;
+      if (!apiKey) {
+        console.error("TMDB_API_KEY not found in environment variables");
+        return res.status(500).json({ message: "TMDB API key not configured" });
+      }
+
       const endpoint = type === "tv" ? "tv" : "movie";
       const url = `https://api.themoviedb.org/3/search/${endpoint}?api_key=${apiKey}&query=${encodeURIComponent(query as string)}`;
+      
+      console.log(`Searching TMDB: ${url}`);
       
       const response = await fetch(url);
       
       if (!response.ok) {
-        throw new Error(`TMDB API error: ${response.status}`);
+        console.error(`TMDB API error: ${response.status} ${response.statusText}`);
+        return res.status(response.status).json({ message: `TMDB API error: ${response.status}` });
       }
       
       const data = await response.json();
@@ -258,14 +266,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create announcement
   app.post("/api/announcements", async (req, res) => {
     try {
+      console.log("Creating announcement with data:", req.body);
+      
+      // Validate request body
+      if (!req.body || typeof req.body !== 'object') {
+        return res.status(400).json({ message: "Invalid request body" });
+      }
+
       const validatedData = insertAnnouncementSchema.parse(req.body);
+      console.log("Validated data:", validatedData);
+      
       const announcement = await storage.createAnnouncement(validatedData);
+      console.log("Created announcement:", announcement);
+      
       res.json(announcement);
     } catch (error) {
+      console.error("Announcement creation error:", error);
+      
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid data", errors: error.errors });
+        return res.status(400).json({ 
+          message: "Invalid data", 
+          errors: error.errors.map(e => ({ path: e.path, message: e.message }))
+        });
       }
-      res.status(500).json({ message: "Failed to create announcement" });
+      
+      res.status(500).json({ 
+        message: "Failed to create announcement",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
     }
   });
 
@@ -318,6 +346,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ success: true });
     } catch (error) {
       res.status(500).json({ message: "Failed to delete upcoming release" });
+    }
+  });
+
+  // Admin Picks endpoints
+  app.get("/api/admin-picks", async (req, res) => {
+    try {
+      const picks = await storage.getAdminPicks();
+      res.json(picks);
+    } catch (error) {
+      console.error("Admin picks API error:", error);
+      res.status(500).json({ message: "Failed to fetch admin picks" });
+    }
+  });
+
+  app.post("/api/admin-picks", async (req, res) => {
+    try {
+      const pick = await storage.createAdminPick(req.body);
+      res.json(pick);
+    } catch (error) {
+      console.error("Create admin pick error:", error);
+      res.status(500).json({ message: "Failed to create admin pick" });
+    }
+  });
+
+  app.delete("/api/admin-picks/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const success = await storage.deleteAdminPick(id);
+      if (success) {
+        res.json({ success: true });
+      } else {
+        res.status(404).json({ success: false, message: "Admin pick not found" });
+      }
+    } catch (error) {
+      res.status(500).json({ success: false, message: "Failed to delete admin pick" });
     }
   });
 
