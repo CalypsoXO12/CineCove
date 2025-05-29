@@ -1,10 +1,10 @@
 import { db } from "./db";
-import { mediaItems, adminUsers, upcomingReleases } from "@shared/schema";
+import { mediaItems, users, upcomingReleases } from "@shared/schema";
 
 export async function seedDatabase() {
   // Check if data already exists
   const existingItems = await db.select().from(mediaItems).limit(1);
-  const existingAdmin = await db.select().from(adminUsers).limit(1);
+  const existingUsers = await db.select().from(users).limit(1);
   
   if (existingItems.length > 0) {
     console.log("Database already seeded, skipping...");
@@ -12,10 +12,11 @@ export async function seedDatabase() {
   }
 
   // Create admin user
-  if (existingAdmin.length === 0) {
-    await db.insert(adminUsers).values({
+  if (existingUsers.length === 0) {
+    await db.insert(users).values({
       username: "Calypso",
-      password: "lordofdarkness12"
+      password: "lordofdarkness12",
+      isAdmin: true
     });
     console.log("Admin user 'Calypso' created");
   }
@@ -107,7 +108,7 @@ export async function seedDatabase() {
       tmdbId: 708022,
       description: "The epic conclusion to Denis Villeneuve's Dune saga continues Paul Atreides' journey.",
       isHighlighted: true,
-      adminId: 1
+      userId: 1
     },
     {
       title: "Avatar 3",
@@ -117,7 +118,7 @@ export async function seedDatabase() {
       tmdbId: 83533,
       description: "Jake Sully and his family continue their fight for survival on Pandora.",
       isHighlighted: true,
-      adminId: 1
+      userId: 1
     },
     {
       title: "The Winds of Winter",
@@ -127,7 +128,7 @@ export async function seedDatabase() {
       tmdbId: 1399,
       description: "House of the Dragon Season 3 brings more dragons and political intrigue.",
       isHighlighted: false,
-      adminId: 1
+      userId: 1
     },
     {
       title: "One Piece: Final Saga",
@@ -137,7 +138,7 @@ export async function seedDatabase() {
       jikanId: 21,
       description: "Luffy and the Straw Hats approach the final leg of their journey to find One Piece.",
       isHighlighted: true,
-      adminId: 1
+      userId: 1
     }
   ];
 
