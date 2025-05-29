@@ -24,15 +24,27 @@ export function LoginModal({ open, onOpenChange, onLoginSuccess }: LoginModalPro
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  // Get registered users from localStorage
+  // Get registered users from localStorage with validation
   const getRegisteredUsers = () => {
-    const users = localStorage.getItem('cinecove_registered_users');
-    return users ? JSON.parse(users) : [];
+    try {
+      const users = localStorage.getItem('cinecove_users_v2');
+      const parsed = users ? JSON.parse(users) : [];
+      // Ensure it's an array
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+      console.error('Error reading user data:', error);
+      return [];
+    }
   };
 
   // Save registered users to localStorage
   const saveRegisteredUsers = (users: any[]) => {
-    localStorage.setItem('cinecove_registered_users', JSON.stringify(users));
+    try {
+      localStorage.setItem('cinecove_users_v2', JSON.stringify(users));
+      console.log('Saved users:', users);
+    } catch (error) {
+      console.error('Error saving user data:', error);
+    }
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -143,11 +155,19 @@ export function LoginModal({ open, onOpenChange, onLoginSuccess }: LoginModalPro
     }
 
     // Create new user
-    const userId = Math.floor(Math.random() * 1000) + 100;
-    const newUser = { username, password, userId };
+    const userId = Date.now(); // Use timestamp for unique ID
+    const newUser = { 
+      username, 
+      password, 
+      userId, 
+      createdAt: new Date().toISOString() 
+    };
     
     registeredUsers.push(newUser);
     saveRegisteredUsers(registeredUsers);
+    
+    console.log('New user registered:', newUser);
+    console.log('All users after registration:', registeredUsers);
 
     onLoginSuccess(userId, false);
     onOpenChange(false);
