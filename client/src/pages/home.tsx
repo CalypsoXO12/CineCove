@@ -1,16 +1,10 @@
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Plus, TrendingUp, Star, Calendar, Clock } from "lucide-react";
-import { Link } from "wouter";
-import { Button } from "@/components/ui/button";
-import { CineCoveLogo } from "@/components/CineNestLogo";
+import { TrendingUp, Star, Calendar, Clock } from "lucide-react";
 import { MediaCard } from "@/components/MediaCard";
-import { AddMediaModal } from "@/components/AddMediaModal";
 import { mediaApi } from "@/lib/api";
 import type { MediaItem, Announcement, UpcomingRelease } from "@shared/schema";
 
 export default function Home() {
-  const [addModalOpen, setAddModalOpen] = useState(false);
 
   const { data: featuredItems = [], isLoading } = useQuery({
     queryKey: ["/api/media", { status: "watching" }],
@@ -34,35 +28,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background pb-mobile-nav">
-      {/* Header */}
-      <header className="bg-card/80 backdrop-blur-sm border-b border-border sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <CineCoveLogo />
-            
-            <div className="flex items-center space-x-4">
-              <nav className="hidden md:flex items-center space-x-6">
-                <Link href="/" className="text-purple-400 font-medium border-b-2 border-purple-400 pb-1">
-                  Home
-                </Link>
-                <Link href="/dashboard" className="text-muted-foreground hover:text-purple-400 transition-colors">
-                  Dashboard
-                </Link>
-                <Link href="/admin" className="text-muted-foreground hover:text-purple-400 transition-colors">
-                  Admin
-                </Link>
-              </nav>
-              <Button 
-                onClick={() => setAddModalOpen(true)}
-                className="gradient-purple text-white font-medium transition-all hover:shadow-lg flex items-center space-x-2"
-              >
-                <Plus className="h-4 w-4" />
-                <span className="hidden sm:inline">Add Media</span>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -76,13 +41,9 @@ export default function Home() {
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
             Your cozy corner for cinema & series. Track, curate, escape — your personal cove.
           </p>
-          <Button 
-            onClick={() => setAddModalOpen(true)}
-            size="lg"
-            className="gradient-cove text-white font-medium px-8 py-4 text-lg hover:shadow-xl transition-all duration-300"
-          >
-            Build Your Cove
-          </Button>
+          <div className="text-lg text-muted-foreground">
+            Sign in to start building your personal collection
+          </div>
         </section>
 
         {/* Top Banner Ad */}
@@ -247,8 +208,6 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Add Media Modal */}
-      <AddMediaModal open={addModalOpen} onOpenChange={setAddModalOpen} />
     </div>
   );
 }
