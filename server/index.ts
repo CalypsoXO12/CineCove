@@ -335,46 +335,61 @@ app.post("/api/auth/register", async (req, res) => {
   }
 });
 
-// Serve frontend - both development and production
-if (process.env.NODE_ENV === "production") {
-  // Production: serve from dist
-  app.use(express.static(path.join(process.cwd(), "dist")));
-  app.get("*", (req, res) => {
-    if (req.path.startsWith("/api/") || req.path === "/health") {
-      return res.status(404).json({ message: "Route not found" });
-    }
-    res.sendFile(path.join(process.cwd(), "dist", "index.html"));
-  });
-} else {
-  // Development: proxy to Vite dev server or serve built files if available
-  const distPath = path.join(process.cwd(), "dist", "public");
-  if (fs.existsSync(distPath)) {
-    app.use(express.static(distPath));
+// Serve frontend - check for both production and development builds
+const isProduction = process.env.NODE_ENV === "production";
+console.log(`Running in ${isProduction ? 'production' : 'development'} mode`);
+
+if (isProduction) {
+  // Production: serve from dist/public (Vite build output)
+  const productionPath = path.join(process.cwd(), "dist", "public");
+  const fallbackPath = path.join(process.cwd(), "dist");
+  
+  if (fs.existsSync(productionPath)) {
+    console.log("Serving static files from:", productionPath);
+    app.use(express.static(productionPath));
     app.get("*", (req, res) => {
       if (req.path.startsWith("/api/") || req.path === "/health") {
         return res.status(404).json({ message: "Route not found" });
       }
-      res.sendFile(path.join(distPath, "index.html"));
+      res.sendFile(path.join(productionPath, "index.html"));
+    });
+  } else if (fs.existsSync(fallbackPath)) {
+    console.log("Serving static files from fallback:", fallbackPath);
+    app.use(express.static(fallbackPath));
+    app.get("*", (req, res) => {
+      if (req.path.startsWith("/api/") || req.path === "/health") {
+        return res.status(404).json({ message: "Route not found" });
+      }
+      res.sendFile(path.join(fallbackPath, "index.html"));
     });
   } else {
-    // Fallback for frontend routes in development
+    console.error("No frontend build found in production");
     app.get("*", (req, res) => {
       if (req.path.startsWith("/api/") || req.path === "/health") {
         return res.status(404).json({ message: "Route not found" });
       }
-      res.status(200).send(`
-        <!DOCTYPE html>
-        <html>
-        <head><title>CineCove - Dev Mode</title></head>
-        <body>
-        <div id="root"></div>
-        <script>
-          console.log('Frontend build not found. Run: npm run build first');
-          document.getElementById('root').innerHTML = '<h1>Run: npm run build</h1><p>Then refresh this page.</p>';
-        </script>
-        </body>
-        </html>
-      `);
+      res.status(500).send("Frontend build not found");
+    });
+  }
+} else {
+  // Development: serve built files if available
+  const devPath = path.join(process.cwd(), "dist", "public");
+  if (fs.existsSync(devPath)) {
+    console.log("Serving development build from:", devPath);
+    app.use(express.static(devPath));
+    app.get("*", (req, res) => {
+      if (req.path.startsWith("/api/") || req.path === "/health") {
+        return res.status(404).json({ message: "Route not found" });
+      }
+      res.sendFile(path.join(devPath, "index.html"));
+    });
+  } else {
+    console.log("No frontend build found - API only mode");
+    app.get("*", (req, res) => {
+      if (req.path.startsWith("/api/") || req.path === "/health") {
+        return res.status(404).json({ message: "Route not found" });
+      }
+      res.status(200).json({ message: "CineCove API - Frontend build required" });
     });
   }
 }

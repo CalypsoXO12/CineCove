@@ -4,7 +4,7 @@ services:
     env: node
     plan: free
     buildCommand: npm ci && npx vite build
-    startCommand: npx tsx server/production.ts
+    startCommand: NODE_ENV=production npx tsx server/index.ts
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
