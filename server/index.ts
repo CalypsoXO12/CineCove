@@ -333,14 +333,17 @@ app.post("/api/auth/register", async (req, res) => {
 
 // Static files in production
 if (process.env.NODE_ENV === "production") {
-  const publicPath = path.join(__dirname, "..");
-  app.use(express.static(publicPath));
+  // Serve static files from dist directory
+  app.use(express.static(path.join(process.cwd(), "dist")));
   
+  // Handle client-side routing
   app.get("*", (req, res) => {
+    // Don't handle API routes or health check
     if (req.path.startsWith("/api/") || req.path === "/health") {
       return res.status(404).json({ message: "Route not found" });
     }
-    res.sendFile(path.join(publicPath, "index.html"));
+    // Serve index.html for all other routes
+    res.sendFile(path.join(process.cwd(), "dist", "index.html"));
   });
 }
 
