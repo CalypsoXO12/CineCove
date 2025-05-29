@@ -46,45 +46,25 @@ export default function Dashboard({ user }: DashboardProps) {
   });
 
   return (
-    <div className="min-h-screen bg-background pb-mobile-nav">
-      {/* Header Navigation */}
-      <header className="bg-card/80 backdrop-blur-sm border-b border-border sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <CineCoveLogo />
-
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link href="/" className="text-muted-foreground hover:text-purple-400 transition-colors">
-                Home
-              </Link>
-              <Link href="/dashboard" className="text-purple-400 font-medium border-b-2 border-purple-400 pb-1">
-                Dashboard
-              </Link>
-              <a href="#" className="text-muted-foreground hover:text-purple-400 transition-colors">
-                Browse
-              </a>
-              <Link href="/admin" className="text-muted-foreground hover:text-purple-400 transition-colors">
-                Admin
-              </Link>
-            </nav>
-
-            {/* User Actions */}
-            <div className="flex items-center space-x-4">
-              <Button 
-                onClick={() => setAddModalOpen(true)}
-                className="gradient-purple text-white font-medium transition-all hover:shadow-lg flex items-center space-x-2"
-              >
-                <Plus className="h-4 w-4" />
-                <span className="hidden sm:inline">Add Media</span>
-              </Button>
-              <div className="w-8 h-8 gradient-purple-soft rounded-full flex items-center justify-center">
-                <User className="text-white h-4 w-4" />
-              </div>
+    <div className="min-h-screen bg-background">
+      {/* Page Header */}
+      <div className="bg-card/80 backdrop-blur-sm border-b border-border">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-cove-blue">My Cove</h1>
+              <p className="text-muted-foreground mt-1">Your personal media collection</p>
             </div>
+            <Button 
+              onClick={() => setAddModalOpen(true)}
+              className="bg-cove-blue hover:bg-cove-blue/90 text-slate-900 font-medium flex items-center space-x-2"
+            >
+              <Plus className="h-4 w-4" />
+              <span>Add Media</span>
+            </Button>
           </div>
         </div>
-      </header>
+      </div>
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
