@@ -70,18 +70,18 @@ export default function Home() {
         {/* Hero Section */}
         <section className="mb-12 text-center">
           <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4">
-            Discover Your Next
-            <span className="bg-gradient-to-r from-purple-400 via-violet-500 to-purple-600 bg-clip-text text-transparent"> Obsession</span>
+            Retreat into
+            <span className="bg-gradient-to-r from-blue-400 via-cyan-500 to-blue-600 bg-clip-text text-transparent"> Stories</span>
           </h1>
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Track movies, TV shows, and anime. Build your personal watchlist and never miss a great story.
+            Your cozy corner for cinema & series. Track, curate, escape — your personal cove.
           </p>
           <Button 
             onClick={() => setAddModalOpen(true)}
             size="lg"
-            className="gradient-purple text-white font-medium px-8 py-4 text-lg"
+            className="gradient-cove text-white font-medium px-8 py-4 text-lg hover:shadow-xl transition-all duration-300"
           >
-            Start Your Collection
+            Build Your Cove
           </Button>
         </section>
 
@@ -178,7 +178,7 @@ export default function Home() {
                 <div className="w-8 h-8 gradient-purple rounded-lg flex items-center justify-center">
                   <Star className="text-white h-4 w-4 fill-current" />
                 </div>
-                <h2 className="text-2xl font-bold text-foreground">Admin Picks</h2>
+                <h2 className="text-2xl font-bold text-foreground">Tide Picks</h2>
               </div>
               
               {isLoading ? (
@@ -204,7 +204,7 @@ export default function Home() {
                 <div className="w-8 h-8 gradient-purple-soft rounded-lg flex items-center justify-center">
                   <TrendingUp className="text-white h-4 w-4" />
                 </div>
-                <h2 className="text-2xl font-bold text-foreground">Recently Added</h2>
+                <h2 className="text-2xl font-bold text-foreground">On the Horizon</h2>
               </div>
               
               <div className="grid mobile-card-grid sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-4">

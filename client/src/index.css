@@ -3,31 +3,32 @@
 @tailwind utilities;
 
 :root {
-  /* Sleek purple and black theme */
-  --background: 0 0% 0%; /* #000000 - Pure black */
-  --foreground: 0 0% 100%; /* #FFFFFF - Pure white */
-  --muted: 258 15% 15%; /* #1F1B2E - Dark purple gray */
-  --muted-foreground: 258 10% 65%; /* #9B96B5 - Muted purple */
-  --popover: 258 20% 8%; /* #0F0D15 - Very dark purple */
-  --popover-foreground: 0 0% 100%; /* #FFFFFF */
-  --card: 258 20% 8%; /* #0F0D15 - Very dark purple */
-  --card-foreground: 0 0% 100%; /* #FFFFFF */
-  --border: 258 15% 20%; /* #2B2438 - Purple border */
-  --input: 258 15% 15%; /* #1F1B2E */
-  --primary: 270 100% 70%; /* #8B5CF6 - Bright purple */
-  --primary-foreground: 0 0% 100%; /* #FFFFFF */
-  --secondary: 258 15% 15%; /* #1F1B2E */
-  --secondary-foreground: 0 0% 100%; /* #FFFFFF */
-  --accent: 280 85% 65%; /* #A855F7 - Violet accent */
-  --accent-foreground: 0 0% 100%; /* #FFFFFF */
-  --destructive: 0 84% 60%; /* #EF4444 */
-  --destructive-foreground: 0 0% 100%; /* #FFFFFF */
-  --ring: 270 100% 70%; /* #8B5CF6 */
+  /* CineCove ocean theme - Deep Night Blue with Soft Cove Blue accents */
+  --background: 220 25% 6%; /* #0B0D11 - Deep Night Blue */
+  --foreground: 210 40% 98%; /* Soft white */
+  --muted: 220 20% 12%; /* Dark ocean blue */
+  --muted-foreground: 210 15% 65%; /* Muted blue-gray */
+  --popover: 220 22% 8%; /* Very dark blue */
+  --popover-foreground: 210 40% 98%; /* Soft white */
+  --card: 220 22% 8%; /* Very dark blue for cards */
+  --card-foreground: 210 40% 98%; /* Soft white */
+  --border: 220 18% 18%; /* Subtle blue border */
+  --input: 220 20% 15%; /* Dark blue input */
+  --primary: 210 100% 78%; /* #93C7FF - Soft Cove Blue */
+  --primary-foreground: 220 25% 6%; /* Deep blue text */
+  --secondary: 220 20% 15%; /* Dark blue secondary */
+  --secondary-foreground: 210 40% 98%; /* Soft white */
+  --accent: 268 67% 80%; /* #E3A1F6 - Lavender Pink */
+  --accent-foreground: 220 25% 6%; /* Deep blue text */
+  --destructive: 0 84% 60%; /* Red for destructive actions */
+  --destructive-foreground: 210 40% 98%; /* Soft white */
+  --ring: 210 100% 78%; /* Cove Blue ring */
   --radius: 0.75rem;
   
-  /* Purple theme colors */
-  --purple-primary: 270 100% 70%; /* #8B5CF6 */
-  --purple-secondary: 280 85% 65%; /* #A855F7 */
+  /* CineCove theme colors */
+  --cove-blue: 210 100% 78%; /* #93C7FF - Soft Cove Blue */
+  --lavender-pink: 268 67% 80%; /* #E3A1F6 - Lavender Pink */
+  --soft-amber: 35 100% 74%; /* #FFC27D - Soft Amber */
   --purple-accent: 290 70% 60%; /* #C084FC */
   --purple-dark: 258 20% 8%; /* #0F0D15 */
   --purple-muted: 258 15% 15%; /* #1F1B2E */
@@ -67,13 +68,26 @@
   }
 }
 
-/* Purple gradient backgrounds */
+/* CineCove ocean gradient backgrounds */
+.gradient-cove {
+  background: linear-gradient(135deg, hsl(var(--cove-blue)) 0%, hsl(var(--lavender-pink)) 60%, hsl(var(--soft-amber)) 100%);
+}
+
+.gradient-cove-soft {
+  background: linear-gradient(135deg, hsl(var(--cove-blue)) 0%, hsl(var(--lavender-pink)) 100%);
+}
+
+.gradient-amber {
+  background: linear-gradient(135deg, hsl(var(--soft-amber)) 0%, #FBBF24 50%, #F59E0B 100%);
+}
+
+/* Legacy purple gradients for compatibility */
 .gradient-purple {
-  background: linear-gradient(135deg, hsl(var(--purple-primary)) 0%, hsl(var(--purple-secondary)) 60%, hsl(var(--purple-accent)) 100%);
+  background: linear-gradient(135deg, hsl(var(--cove-blue)) 0%, hsl(var(--lavender-pink)) 60%, hsl(var(--soft-amber)) 100%);
 }
 
 .gradient-purple-soft {
-  background: linear-gradient(135deg, hsl(var(--purple-secondary)) 0%, hsl(var(--purple-accent)) 100%);
+  background: linear-gradient(135deg, hsl(var(--cove-blue)) 0%, hsl(var(--lavender-pink)) 100%);
 }
 
 /* Smooth transitions for interactive elements */

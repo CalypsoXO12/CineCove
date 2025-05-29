@@ -110,14 +110,14 @@ export default function Dashboard() {
             <div className="text-muted-foreground mb-6 text-sm md:text-base">
               {searchQuery || activeType !== "all" || activeStatus !== "all" 
                 ? "No media items found matching your filters" 
-                : "Your watchlist is empty"}
+                : "Your cove is calm and quiet... for now."}
             </div>
             <Button 
               onClick={() => setAddModalOpen(true)}
-              className="gradient-purple text-white font-medium mobile-touch"
+              className="gradient-cove text-white font-medium mobile-touch"
             >
               <Plus className="h-4 w-4 mr-2" />
-              Add Your First Item
+              Begin Curating
             </Button>
           </div>
         ) : (
