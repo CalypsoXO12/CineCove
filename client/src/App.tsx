@@ -15,7 +15,7 @@ function Router({ user }: { user: { id: number; isAdmin: boolean } | null }) {
   return (
     <Switch>
       <Route path="/" component={Home} />
-      <Route path="/dashboard" component={Dashboard} />
+      <Route path="/dashboard" component={() => <Dashboard user={user} />} />
       <Route path="/admin" component={() => <AdminPanel user={user} />} />
       <Route component={NotFound} />
     </Switch>

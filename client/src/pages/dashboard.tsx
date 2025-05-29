@@ -10,11 +10,27 @@ import { AddMediaModal } from "@/components/AddMediaModal";
 import { mediaApi } from "@/lib/api";
 import type { MediaItem } from "@shared/schema";
 
-export default function Dashboard() {
+interface DashboardProps {
+  user: { id: number; isAdmin: boolean } | null;
+}
+
+export default function Dashboard({ user }: DashboardProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeType, setActiveType] = useState("all");
   const [activeStatus, setActiveStatus] = useState("all");
   const [addModalOpen, setAddModalOpen] = useState(false);
+
+  // Redirect non-authenticated users
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-foreground mb-4">Access Your Cove</h1>
+          <p className="text-muted-foreground mb-6">Please sign in to view your personal media collection</p>
+        </div>
+      </div>
+    );
+  }
 
   const { data: mediaItems = [], isLoading } = useQuery({
     queryKey: ["/api/media", { 
