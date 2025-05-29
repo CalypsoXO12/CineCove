@@ -193,7 +193,7 @@ export default function AdminPanel({ user }: AdminPanelProps) {
   // Create admin pick
   const createAdminPickMutation = useMutation({
     mutationFn: async (mediaId: number) => {
-      const mediaItem = mediaItems.find(item => item.id === mediaId);
+      const mediaItem = mediaItems.find((item: any) => item.id === mediaId);
       if (!mediaItem) throw new Error("Media item not found");
 
       const adminPickData = {

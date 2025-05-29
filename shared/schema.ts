@@ -124,7 +124,10 @@ export const adminPicks = pgTable("admin_picks", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const insertAdminPickSchema = createInsertSchema(adminPicks);
+export const insertAdminPickSchema = createInsertSchema(adminPicks).omit({
+  id: true,
+  createdAt: true
+});
 
 export type InsertAdminPick = z.infer<typeof insertAdminPickSchema>;
 export type AdminPick = typeof adminPicks.$inferSelect;
