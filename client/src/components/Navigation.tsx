@@ -76,9 +76,9 @@ export function Navigation({ user, onLogin, onLogout }: NavigationProps) {
             ) : (
               <Button
                 onClick={onLogin}
-                className="bg-cove-blue hover:bg-cove-blue/90 text-slate-900"
+                className="bg-gradient-to-r from-cove-blue to-blue-500 hover:from-cove-blue/90 hover:to-blue-500/90 text-slate-900 font-semibold px-6 py-2 shadow-lg hover:shadow-xl transition-all duration-300 border border-blue-300/20"
               >
-                Enter Cove
+                🌊 Enter Cove
               </Button>
             )}
           </div>
