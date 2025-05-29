@@ -67,7 +67,11 @@ export function LoginModal({ open, onOpenChange, onLoginSuccess }: LoginModalPro
 
     // Check registered users
     const registeredUsers = getRegisteredUsers();
+    console.log("Attempting login for:", username);
+    console.log("Registered users:", registeredUsers);
+    
     const user = registeredUsers.find((u: any) => u.username === username && u.password === password);
+    console.log("Found matching user:", user);
 
     if (user) {
       onLoginSuccess(user.userId, false);
@@ -81,9 +85,11 @@ export function LoginModal({ open, onOpenChange, onLoginSuccess }: LoginModalPro
       return;
     }
 
+    // If we reach here, login should fail
+    console.log("Login failed - no matching user found");
     toast({
       title: "Login failed",
-      description: "Invalid username or password.",
+      description: "Invalid username or password. Please register first or use admin credentials.",
       variant: "destructive",
     });
     setIsLoading(false);
