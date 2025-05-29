@@ -29,20 +29,24 @@ export function LoginModal({ open, onOpenChange, onLoginSuccess }: LoginModalPro
     setIsLoading(true);
 
     try {
-      const response = await apiRequest({
-        url: "/api/login",
+      const response = await fetch("/api/login", {
         method: "POST",
-        body: { username, password },
+        body: JSON.stringify({ username, password }),
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
 
-      if (response.success) {
-        onLoginSuccess(response.userId, response.isAdmin);
+      const data = await response.json();
+
+      if (data.success) {
+        onLoginSuccess(data.userId, data.isAdmin);
         onOpenChange(false);
         setUsername("");
         setPassword("");
         toast({
           title: "Login successful",
-          description: response.isAdmin 
+          description: data.isAdmin 
             ? "Welcome back, Captain! You have admin access to the cove." 
             : "Welcome to your personal cove!",
         });
