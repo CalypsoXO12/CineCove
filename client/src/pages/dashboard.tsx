@@ -90,7 +90,7 @@ export default function Dashboard() {
 
         {/* Media Grid */}
         {isLoading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 mb-8">
+          <div className="grid mobile-card-grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4 mb-8">
             {[...Array(12)].map((_, i) => (
               <div key={i} className="bg-card rounded-2xl overflow-hidden border border-border animate-pulse">
                 <div className="aspect-[2/3] bg-muted"></div>
@@ -98,22 +98,22 @@ export default function Dashboard() {
             ))}
           </div>
         ) : mediaItems.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="text-muted-foreground mb-4">
+          <div className="text-center py-12 mobile-spacing">
+            <div className="text-muted-foreground mb-6 text-sm md:text-base">
               {searchQuery || activeType !== "all" || activeStatus !== "all" 
                 ? "No media items found matching your filters" 
                 : "Your watchlist is empty"}
             </div>
             <Button 
               onClick={() => setAddModalOpen(true)}
-              className="gradient-warm text-[hsl(var(--dark-primary))] font-medium"
+              className="gradient-warm text-[hsl(var(--deep-brown))] font-medium mobile-touch"
             >
               <Plus className="h-4 w-4 mr-2" />
               Add Your First Item
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 mb-8">
+          <div className="grid mobile-card-grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4 mb-8">
             {mediaItems.map((item: MediaItem) => (
               <MediaCard key={item.id} item={item} />
             ))}
@@ -133,22 +133,22 @@ export default function Dashboard() {
       </div>
 
       {/* Mobile Bottom Navigation */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-card/90 backdrop-blur-sm border-t border-border z-40">
-        <div className="flex justify-around py-2">
-          <button className="flex flex-col items-center py-2 px-4 text-[hsl(var(--warm-amber))]">
-            <div className="text-xl mb-1">🏠</div>
-            <span className="text-xs">Home</span>
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-md border-t border-border z-40 safe-area-inset-bottom">
+        <div className="flex justify-around py-3 px-2">
+          <button className="flex flex-col items-center py-2 px-3 text-amber-400 mobile-touch rounded-xl bg-amber-400/10">
+            <div className="text-lg mb-1">🏠</div>
+            <span className="text-xs font-medium">Home</span>
           </button>
-          <button className="flex flex-col items-center py-2 px-4 text-muted-foreground">
-            <div className="text-xl mb-1">🔍</div>
+          <button className="flex flex-col items-center py-2 px-3 text-muted-foreground mobile-touch rounded-xl hover:bg-muted/50 transition-colors">
+            <div className="text-lg mb-1">🔍</div>
             <span className="text-xs">Search</span>
           </button>
-          <button className="flex flex-col items-center py-2 px-4 text-muted-foreground">
-            <div className="text-xl mb-1">📊</div>
+          <button className="flex flex-col items-center py-2 px-3 text-muted-foreground mobile-touch rounded-xl hover:bg-muted/50 transition-colors">
+            <div className="text-lg mb-1">📊</div>
             <span className="text-xs">Stats</span>
           </button>
-          <button className="flex flex-col items-center py-2 px-4 text-muted-foreground">
-            <div className="text-xl mb-1">👤</div>
+          <button className="flex flex-col items-center py-2 px-3 text-muted-foreground mobile-touch rounded-xl hover:bg-muted/50 transition-colors">
+            <div className="text-lg mb-1">👤</div>
             <span className="text-xs">Profile</span>
           </button>
         </div>

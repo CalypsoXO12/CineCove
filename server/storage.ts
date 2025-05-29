@@ -98,7 +98,14 @@ export class MemStorage implements IStorage {
   async createMediaItem(insertItem: InsertMediaItem): Promise<MediaItem> {
     const id = this.currentId++;
     const item: MediaItem = { 
-      ...insertItem, 
+      ...insertItem,
+      rating: insertItem.rating ?? null,
+      notes: insertItem.notes ?? null,
+      posterUrl: insertItem.posterUrl ?? null,
+      tmdbId: insertItem.tmdbId ?? null,
+      jikanId: insertItem.jikanId ?? null,
+      genre: insertItem.genre ?? null,
+      year: insertItem.year ?? null,
       id, 
       createdAt: new Date() 
     };
