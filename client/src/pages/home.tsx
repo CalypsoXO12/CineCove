@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Plus, TrendingUp, Star, Calendar } from "lucide-react";
+import { Plus, TrendingUp, Star, Calendar, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CineNestLogo } from "@/components/CineNestLogo";
 import { MediaCard } from "@/components/MediaCard";
 import { AddMediaModal } from "@/components/AddMediaModal";
 import { mediaApi } from "@/lib/api";
-import type { MediaItem } from "@shared/schema";
+import type { MediaItem, Announcement, UpcomingRelease } from "@shared/schema";
 
 export default function Home() {
   const [addModalOpen, setAddModalOpen] = useState(false);
@@ -19,6 +19,16 @@ export default function Home() {
   const { data: recentlyAdded = [] } = useQuery({
     queryKey: ["/api/media", { recent: true }],
     queryFn: () => mediaApi.getMediaItems(),
+  });
+
+  const { data: announcements = [] } = useQuery({
+    queryKey: ["/api/announcements"],
+    queryFn: () => fetch("/api/announcements").then(res => res.json()),
+  });
+
+  const { data: upcomingReleases = [] } = useQuery({
+    queryKey: ["/api/upcoming"],
+    queryFn: () => fetch("/api/upcoming").then(res => res.json()),
   });
 
   return (
@@ -72,32 +82,29 @@ export default function Home() {
         </div>
 
         {/* Admin Announcements */}
-        <section className="mb-12">
-          <div className="bg-gradient-to-r from-purple-500/10 to-violet-500/10 border border-purple-500/20 rounded-xl p-6">
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="w-8 h-8 gradient-purple rounded-lg flex items-center justify-center">
-                <Calendar className="text-white h-4 w-4" />
+        {announcements.length > 0 && (
+          <section className="mb-12">
+            <div className="bg-gradient-to-r from-purple-500/10 to-violet-500/10 border border-purple-500/20 rounded-xl p-6">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-8 h-8 gradient-purple rounded-lg flex items-center justify-center">
+                  <Calendar className="text-white h-4 w-4" />
+                </div>
+                <h2 className="text-xl font-bold text-foreground">Latest Updates</h2>
               </div>
-              <h2 className="text-xl font-bold text-foreground">Latest Updates</h2>
-            </div>
-            <div className="space-y-4">
-              <div className="bg-card/50 rounded-lg p-4 border border-border/50">
-                <h3 className="font-semibold text-foreground mb-2">New Feature: Enhanced Search</h3>
-                <p className="text-muted-foreground text-sm">
-                  We've improved our search functionality with better TMDB integration and faster results.
-                </p>
-                <span className="text-xs text-purple-400 mt-2 block">2 days ago</span>
-              </div>
-              <div className="bg-card/50 rounded-lg p-4 border border-border/50">
-                <h3 className="font-semibold text-foreground mb-2">Database Migration Complete</h3>
-                <p className="text-muted-foreground text-sm">
-                  All user data has been successfully migrated to our new PostgreSQL infrastructure for better performance.
-                </p>
-                <span className="text-xs text-purple-400 mt-2 block">1 week ago</span>
+              <div className="space-y-4">
+                {announcements.map((announcement: Announcement) => (
+                  <div key={announcement.id} className="bg-card/50 rounded-lg p-4 border border-border/50">
+                    <h3 className="font-semibold text-foreground mb-2">{announcement.title}</h3>
+                    <p className="text-muted-foreground text-sm">{announcement.content}</p>
+                    <span className="text-xs text-purple-400 mt-2 block">
+                      {new Date(announcement.createdAt!).toLocaleDateString()}
+                    </span>
+                  </div>
+                ))}
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         <div className="flex gap-8">
           {/* Sidebar Ad */}

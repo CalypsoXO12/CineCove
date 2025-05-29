@@ -130,7 +130,7 @@ export class DatabaseStorage implements IStorage {
 
   async deleteAnnouncement(id: number): Promise<boolean> {
     const result = await db.delete(announcements).where(eq(announcements.id, id));
-    return result.rowCount > 0;
+    return (result.rowCount ?? 0) > 0;
   }
 
   // Upcoming releases
@@ -146,7 +146,7 @@ export class DatabaseStorage implements IStorage {
 
   async deleteUpcomingRelease(id: number): Promise<boolean> {
     const result = await db.delete(upcomingReleases).where(eq(upcomingReleases.id, id));
-    return result.rowCount > 0;
+    return (result.rowCount ?? 0) > 0;
   }
 }
 

@@ -1,12 +1,23 @@
 import { db } from "./db";
-import { mediaItems } from "@shared/schema";
+import { mediaItems, adminUsers, upcomingReleases } from "@shared/schema";
 
 export async function seedDatabase() {
   // Check if data already exists
   const existingItems = await db.select().from(mediaItems).limit(1);
+  const existingAdmin = await db.select().from(adminUsers).limit(1);
+  
   if (existingItems.length > 0) {
     console.log("Database already seeded, skipping...");
     return;
+  }
+
+  // Create admin user
+  if (existingAdmin.length === 0) {
+    await db.insert(adminUsers).values({
+      username: "Calypso",
+      password: "lordofdarkness12"
+    });
+    console.log("Admin user 'Calypso' created");
   }
 
   const sampleData = [
@@ -85,5 +96,52 @@ export async function seedDatabase() {
   ];
 
   await db.insert(mediaItems).values(sampleData);
+
+  // Seed upcoming releases
+  const upcomingData = [
+    {
+      title: "Dune: Part Three",
+      type: "movie",
+      releaseDate: "2026-07-17",
+      posterUrl: "https://image.tmdb.org/t/p/w500/8b8R8l88Qje9dn9OE8PY05Nxl1X.jpg",
+      tmdbId: 708022,
+      description: "The epic conclusion to Denis Villeneuve's Dune saga continues Paul Atreides' journey.",
+      isHighlighted: true,
+      adminId: 1
+    },
+    {
+      title: "Avatar 3",
+      type: "movie", 
+      releaseDate: "2025-12-19",
+      posterUrl: "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
+      tmdbId: 83533,
+      description: "Jake Sully and his family continue their fight for survival on Pandora.",
+      isHighlighted: true,
+      adminId: 1
+    },
+    {
+      title: "The Winds of Winter",
+      type: "tv",
+      releaseDate: "2025-04-01",
+      posterUrl: "https://image.tmdb.org/t/p/w500/1XS1oqL89opfnbLl8WnZY1O1uJx.jpg",
+      tmdbId: 1399,
+      description: "House of the Dragon Season 3 brings more dragons and political intrigue.",
+      isHighlighted: false,
+      adminId: 1
+    },
+    {
+      title: "One Piece: Final Saga",
+      type: "anime",
+      releaseDate: "2025-01-07",
+      posterUrl: "https://cdn.myanimelist.net/images/anime/1244/138851.jpg",
+      jikanId: 21,
+      description: "Luffy and the Straw Hats approach the final leg of their journey to find One Piece.",
+      isHighlighted: true,
+      adminId: 1
+    }
+  ];
+
+  await db.insert(upcomingReleases).values(upcomingData);
+
   console.log("Database seeded with sample data");
 }
