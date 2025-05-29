@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Plus, User } from "lucide-react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { Plus, User, Edit, Trash2 } from "lucide-react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { CineCoveLogo } from "@/components/CineNestLogo";
@@ -8,6 +8,12 @@ import { SearchFilters } from "@/components/SearchFilters";
 import { MediaCard } from "@/components/MediaCard";
 import { AddMediaModal } from "@/components/AddMediaModal";
 import { mediaApi } from "@/lib/api";
+import { queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import type { MediaItem } from "@shared/schema";
 
 interface DashboardProps {
@@ -19,6 +25,9 @@ export default function Dashboard({ user }: DashboardProps) {
   const [activeType, setActiveType] = useState("all");
   const [activeStatus, setActiveStatus] = useState("all");
   const [addModalOpen, setAddModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<MediaItem | null>(null);
+  const { toast } = useToast();
 
   // Redirect non-authenticated users
   if (!user) {
@@ -44,6 +53,57 @@ export default function Dashboard({ user }: DashboardProps) {
       status: activeStatus !== "all" ? activeStatus : undefined,
     }),
   });
+
+  // Update media item mutation
+  const updateMediaMutation = useMutation({
+    mutationFn: async ({ id, updates }: { id: number; updates: Partial<MediaItem> }) => {
+      const response = await fetch(`/api/media/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updates),
+      });
+      if (!response.ok) throw new Error("Failed to update media item");
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/media"] });
+      toast({ title: "Media updated successfully" });
+      setEditModalOpen(false);
+      setSelectedItem(null);
+    },
+    onError: () => {
+      toast({ title: "Failed to update media", variant: "destructive" });
+    },
+  });
+
+  // Delete media item mutation
+  const deleteMediaMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await fetch(`/api/media/${id}`, { method: "DELETE" });
+      if (!response.ok) throw new Error("Failed to delete media item");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/media"] });
+      toast({ title: "Media deleted successfully" });
+    },
+    onError: () => {
+      toast({ title: "Failed to delete media", variant: "destructive" });
+    },
+  });
+
+  // Quick status update function
+  const handleStatusUpdate = (item: MediaItem, newStatus: string) => {
+    updateMediaMutation.mutate({
+      id: item.id,
+      updates: { status: newStatus },
+    });
+  };
+
+  // Handle edit item
+  const handleEditItem = (item: MediaItem) => {
+    setSelectedItem(item);
+    setEditModalOpen(true);
+  };
 
   return (
     <div className="min-h-screen bg-background">

@@ -56,19 +56,31 @@ export default function AdminPanel({ user }: AdminPanelProps) {
   }
 
   // Fetch data
-  const { data: announcements = [] } = useQuery({
+  const { data: announcements = [], error: announcementsError } = useQuery({
     queryKey: ["/api/announcements"],
-    queryFn: () => fetch("/api/announcements").then(res => res.json())
+    queryFn: async () => {
+      const res = await fetch("/api/announcements");
+      if (!res.ok) throw new Error("Failed to fetch announcements");
+      return res.json();
+    }
   });
 
-  const { data: upcomingReleases = [] } = useQuery({
+  const { data: upcomingReleases = [], error: upcomingError } = useQuery({
     queryKey: ["/api/upcoming"],
-    queryFn: () => fetch("/api/upcoming").then(res => res.json())
+    queryFn: async () => {
+      const res = await fetch("/api/upcoming");
+      if (!res.ok) throw new Error("Failed to fetch upcoming releases");
+      return res.json();
+    }
   });
 
-  const { data: mediaItems = [] } = useQuery({
+  const { data: mediaItems = [], error: mediaError } = useQuery({
     queryKey: ["/api/media"],
-    queryFn: () => fetch("/api/media").then(res => res.json())
+    queryFn: async () => {
+      const res = await fetch("/api/media");
+      if (!res.ok) throw new Error("Failed to fetch media items");
+      return res.json();
+    }
   });
 
   // Create announcement
