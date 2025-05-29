@@ -37,7 +37,12 @@ export function LoginModal({ open, onOpenChange, onLoginSuccess }: LoginModalPro
         },
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
+      console.log("Login response:", data);
 
       if (data.success) {
         onLoginSuccess(data.userId, data.isAdmin);
@@ -50,6 +55,7 @@ export function LoginModal({ open, onOpenChange, onLoginSuccess }: LoginModalPro
             : "Welcome to your personal cove!",
         });
       } else {
+        console.error("Login failed:", data);
         toast({
           title: "Login failed",
           description: data.message || "Invalid username or password.",
@@ -57,6 +63,7 @@ export function LoginModal({ open, onOpenChange, onLoginSuccess }: LoginModalPro
         });
       }
     } catch (error) {
+      console.error("Login error:", error);
       toast({
         title: "Login failed",
         description: "Unable to connect. Please try again.",
@@ -93,10 +100,15 @@ export function LoginModal({ open, onOpenChange, onLoginSuccess }: LoginModalPro
         },
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
+      console.log("Registration response:", data);
 
       if (data.success) {
-        onLoginSuccess(data.userId, false);
+        onLoginSuccess(data.userId, data.isAdmin || false);
         onOpenChange(false);
         setRegisterForm({ username: "", password: "", confirmPassword: "" });
         toast({
@@ -104,6 +116,7 @@ export function LoginModal({ open, onOpenChange, onLoginSuccess }: LoginModalPro
           description: "Your account has been created successfully!",
         });
       } else {
+        console.error("Registration failed:", data);
         toast({
           title: "Registration failed",
           description: data.message || "Username might already be taken.",
@@ -111,6 +124,7 @@ export function LoginModal({ open, onOpenChange, onLoginSuccess }: LoginModalPro
         });
       }
     } catch (error) {
+      console.error("Registration error:", error);
       toast({
         title: "Registration failed",
         description: "Unable to create account. Please try again.",
