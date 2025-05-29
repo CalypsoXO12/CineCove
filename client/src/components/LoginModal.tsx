@@ -26,25 +26,34 @@ export function LoginModal({ open, onOpenChange, onLoginSuccess }: LoginModalPro
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!loginForm.username.trim() || !loginForm.password.trim()) {
+      toast({
+        title: "Login failed",
+        description: "Please enter both username and password.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsLoading(true);
 
     try {
       const response = await fetch("/api/login", {
         method: "POST",
-        body: JSON.stringify(loginForm),
+        body: JSON.stringify({
+          username: loginForm.username.trim(),
+          password: loginForm.password
+        }),
         headers: {
           "Content-Type": "application/json",
         },
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
       const data = await response.json();
       console.log("Login response:", data);
 
-      if (data.success) {
+      if (response.ok && data.success) {
         onLoginSuccess(data.userId, data.isAdmin);
         onOpenChange(false);
         setLoginForm({ username: "", password: "" });
@@ -55,7 +64,6 @@ export function LoginModal({ open, onOpenChange, onLoginSuccess }: LoginModalPro
             : "Welcome to your personal cove!",
         });
       } else {
-        console.error("Login failed:", data);
         toast({
           title: "Login failed",
           description: data.message || "Invalid username or password.",
@@ -66,7 +74,7 @@ export function LoginModal({ open, onOpenChange, onLoginSuccess }: LoginModalPro
       console.error("Login error:", error);
       toast({
         title: "Login failed",
-        description: "Unable to connect. Please try again.",
+        description: "Unable to connect to server. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -76,6 +84,24 @@ export function LoginModal({ open, onOpenChange, onLoginSuccess }: LoginModalPro
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!registerForm.username.trim() || !registerForm.password.trim()) {
+      toast({
+        title: "Registration failed",
+        description: "Please fill in all fields.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (registerForm.username.trim().length < 3 || registerForm.password.length < 3) {
+      toast({
+        title: "Registration failed",
+        description: "Username and password must be at least 3 characters long.",
+        variant: "destructive",
+      });
+      return;
+    }
     
     if (registerForm.password !== registerForm.confirmPassword) {
       toast({
@@ -92,7 +118,7 @@ export function LoginModal({ open, onOpenChange, onLoginSuccess }: LoginModalPro
       const response = await fetch("/api/register", {
         method: "POST",
         body: JSON.stringify({
-          username: registerForm.username,
+          username: registerForm.username.trim(),
           password: registerForm.password,
         }),
         headers: {
@@ -100,14 +126,10 @@ export function LoginModal({ open, onOpenChange, onLoginSuccess }: LoginModalPro
         },
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
       const data = await response.json();
       console.log("Registration response:", data);
 
-      if (data.success) {
+      if (response.ok && data.success) {
         onLoginSuccess(data.userId, data.isAdmin || false);
         onOpenChange(false);
         setRegisterForm({ username: "", password: "", confirmPassword: "" });
@@ -116,10 +138,9 @@ export function LoginModal({ open, onOpenChange, onLoginSuccess }: LoginModalPro
           description: "Your account has been created successfully!",
         });
       } else {
-        console.error("Registration failed:", data);
         toast({
           title: "Registration failed",
-          description: data.message || "Username might already be taken.",
+          description: data.message || "Unable to create account.",
           variant: "destructive",
         });
       }
@@ -127,7 +148,7 @@ export function LoginModal({ open, onOpenChange, onLoginSuccess }: LoginModalPro
       console.error("Registration error:", error);
       toast({
         title: "Registration failed",
-        description: "Unable to create account. Please try again.",
+        description: "Unable to connect to server. Please try again.",
         variant: "destructive",
       });
     } finally {

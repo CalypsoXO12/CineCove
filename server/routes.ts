@@ -183,15 +183,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // User login
   app.post("/api/login", async (req, res) => {
     try {
+      console.log("Login attempt:", req.body);
       const { username, password } = req.body;
       
+      if (!username || !password) {
+        return res.status(400).json({ success: false, message: "Username and password required" });
+      }
+      
       const user = await storage.getUserByUsername(username);
+      console.log("Found user:", user ? { id: user.id, username: user.username, isAdmin: user.isAdmin } : null);
+      
       if (!user || user.password !== password) {
         return res.status(401).json({ success: false, message: "Invalid credentials" });
       }
       
       res.json({ success: true, userId: user.id, isAdmin: user.isAdmin });
     } catch (error) {
+      console.error("Login error:", error);
       res.status(500).json({ success: false, message: "Login failed" });
     }
   });
@@ -199,7 +207,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // User registration
   app.post("/api/register", async (req, res) => {
     try {
+      console.log("Registration attempt:", req.body);
       const { username, password } = req.body;
+      
+      if (!username || !password) {
+        return res.status(400).json({ success: false, message: "Username and password required" });
+      }
+      
+      if (username.length < 3 || password.length < 3) {
+        return res.status(400).json({ success: false, message: "Username and password must be at least 3 characters" });
+      }
       
       // Check if username already exists
       const existingUser = await storage.getUserByUsername(username);
@@ -214,8 +231,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         isAdmin: false
       });
       
+      console.log("Created user:", { id: newUser.id, username: newUser.username, isAdmin: newUser.isAdmin });
       res.json({ success: true, userId: newUser.id, isAdmin: newUser.isAdmin });
     } catch (error) {
+      console.error("Registration error:", error);
       res.status(500).json({ success: false, message: "Registration failed" });
     }
   });
