@@ -2,10 +2,10 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { storage } from "./storage.js";
-import { insertMediaItemSchema, insertAnnouncementSchema, insertUpcomingReleaseSchema, insertAdminPickSchema } from "../shared/schema.js";
+import { storage } from "./storage";
+import { insertMediaItemSchema, insertAnnouncementSchema, insertUpcomingReleaseSchema, insertAdminPickSchema } from "../shared/schema";
 import { z } from "zod";
-import { seedDatabase } from "./seed.js";
+import { seedDatabase } from "./seed";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
