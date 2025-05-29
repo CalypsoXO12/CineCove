@@ -19,6 +19,8 @@ interface AdminPanelProps {
 
 export default function AdminPanel({ user }: AdminPanelProps) {
   const [announcementForm, setAnnouncementForm] = useState({ title: "", content: "" });
+  const [announcementDialogOpen, setAnnouncementDialogOpen] = useState(false);
+  const [upcomingDialogOpen, setUpcomingDialogOpen] = useState(false);
   const [upcomingForm, setUpcomingForm] = useState({
     title: "",
     type: "",
@@ -86,18 +88,28 @@ export default function AdminPanel({ user }: AdminPanelProps) {
   // Create announcement
   const createAnnouncementMutation = useMutation({
     mutationFn: async (data: { title: string; content: string; adminId: number }) => {
+      console.log("Creating announcement with data:", data);
       const response = await fetch("/api/announcements", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
       });
-      if (!response.ok) throw new Error("Failed to create announcement");
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Announcement creation failed:", errorText);
+        throw new Error(`Failed to create announcement: ${errorText}`);
+      }
       return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/announcements"] });
       setAnnouncementForm({ title: "", content: "" });
+      setAnnouncementDialogOpen(false);
       toast({ title: "Announcement created successfully" });
+    },
+    onError: (error) => {
+      console.error("Announcement mutation error:", error);
+      toast({ title: "Failed to create announcement", description: error.message, variant: "destructive" });
     }
   });
 
@@ -190,7 +202,7 @@ export default function AdminPanel({ user }: AdminPanelProps) {
                 <Calendar className="h-6 w-6" />
                 <span>Manage Announcements</span>
               </h2>
-              <Dialog>
+              <Dialog open={announcementDialogOpen} onOpenChange={setAnnouncementDialogOpen}>
                 <DialogTrigger asChild>
                   <Button className="gradient-purple text-white">
                     <Plus className="h-4 w-4 mr-2" />
