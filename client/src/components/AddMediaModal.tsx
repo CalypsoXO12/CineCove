@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
 import { useForm } from "react-hook-form";
@@ -24,6 +24,7 @@ export function AddMediaModal({ open, onOpenChange }: AddMediaModalProps) {
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState<(TMDBSearchResult | JikanSearchResult)[]>([]);
   const [selectedType, setSelectedType] = useState<"movie" | "tv" | "anime">("movie");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const form = useForm<InsertMediaItem>({
     resolver: zodResolver(insertMediaItemSchema),
@@ -63,7 +64,7 @@ export function AddMediaModal({ open, onOpenChange }: AddMediaModalProps) {
     },
   });
 
-  const handleSearch = async (query: string) => {
+  const handleSearch = useCallback(async (query: string) => {
     if (!query.trim()) {
       setSearchResults([]);
       return;
@@ -89,7 +90,19 @@ export function AddMediaModal({ open, onOpenChange }: AddMediaModalProps) {
     } finally {
       setIsSearching(false);
     }
-  };
+  }, [selectedType, toast]);
+
+  const handleSearchInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    
+    // Debounce the search
+    const timeoutId = setTimeout(() => {
+      handleSearch(value);
+    }, 300);
+    
+    return () => clearTimeout(timeoutId);
+  }, [handleSearch]);
 
   const selectSearchResult = (result: TMDBSearchResult | JikanSearchResult) => {
     if ("mal_id" in result) {
@@ -127,6 +140,7 @@ export function AddMediaModal({ open, onOpenChange }: AddMediaModalProps) {
     setSelectedType(type);
     form.setValue("type", type);
     setSearchResults([]);
+    setSearchQuery("");
   };
 
   return (
@@ -167,7 +181,8 @@ export function AddMediaModal({ open, onOpenChange }: AddMediaModalProps) {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input
                   placeholder={`Search for ${selectedType === "tv" ? "TV shows" : selectedType}...`}
-                  onChange={(e) => handleSearch(e.target.value)}
+                  value={searchQuery}
+                  onChange={handleSearchInputChange}
                   className="pl-10 bg-secondary border-border"
                   disabled={isSearching}
                 />
