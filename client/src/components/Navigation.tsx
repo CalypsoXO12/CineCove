@@ -41,7 +41,7 @@ export function Navigation({ user, onLogin, onLogout }: NavigationProps) {
                 </Link>
               )}
               
-              {user?.isAdmin && (
+              {user && user.isAdmin && (
                 <Link href="/admin">
                   <span className={`text-sm font-medium transition-colors hover:text-amber-400 ${
                     location === "/admin" ? "text-amber-400" : "text-muted-foreground"
