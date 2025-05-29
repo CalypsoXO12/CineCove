@@ -226,6 +226,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const announcements = await storage.getAnnouncements();
       res.json(announcements);
     } catch (error) {
+      console.error("Announcements API error:", error);
       res.status(500).json({ message: "Failed to fetch announcements" });
     }
   });

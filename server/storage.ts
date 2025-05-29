@@ -119,8 +119,13 @@ export class DatabaseStorage implements IStorage {
 
   // Announcements
   async getAnnouncements(): Promise<Announcement[]> {
-    const items = await db.select().from(announcements).orderBy(desc(announcements.createdAt));
-    return items;
+    try {
+      const items = await db.select().from(announcements).orderBy(desc(announcements.createdAt));
+      return items;
+    } catch (error) {
+      console.error("Database error in getAnnouncements:", error);
+      return [];
+    }
   }
 
   async createAnnouncement(insertAnnouncement: InsertAnnouncement): Promise<Announcement> {
