@@ -38,6 +38,11 @@ export interface IStorage {
   getUpcomingReleases(): Promise<UpcomingRelease[]>;
   createUpcomingRelease(release: InsertUpcomingRelease): Promise<UpcomingRelease>;
   deleteUpcomingRelease(id: number): Promise<boolean>;
+  
+  // Admin Picks
+  getAdminPicks(): Promise<AdminPick[]>;
+  createAdminPick(pick: InsertAdminPick): Promise<AdminPick>;
+  deleteAdminPick(id: number): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -151,6 +156,22 @@ export class DatabaseStorage implements IStorage {
 
   async deleteUpcomingRelease(id: number): Promise<boolean> {
     const result = await db.delete(upcomingReleases).where(eq(upcomingReleases.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  // Admin Picks
+  async getAdminPicks(): Promise<AdminPick[]> {
+    const picks = await db.select().from(adminPicks).orderBy(desc(adminPicks.createdAt));
+    return picks;
+  }
+
+  async createAdminPick(insertPick: InsertAdminPick): Promise<AdminPick> {
+    const [pick] = await db.insert(adminPicks).values(insertPick).returning();
+    return pick;
+  }
+
+  async deleteAdminPick(id: number): Promise<boolean> {
+    const result = await db.delete(adminPicks).where(eq(adminPicks.id, id));
     return (result.rowCount ?? 0) > 0;
   }
 }

@@ -106,3 +106,25 @@ export interface JikanSearchResult {
   synopsis?: string;
   genres?: Array<{ name: string }>;
 }
+
+// Admin Picks - Featured content curated by admin
+export const adminPicks = pgTable("admin_picks", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  type: text("type").notNull(), // movie, tv, anime
+  status: text("status").notNull().default("featured"),
+  rating: integer("rating"),
+  notes: text("notes"),
+  posterUrl: text("poster_url"),
+  tmdbId: integer("tmdb_id"),
+  jikanId: integer("jikan_id"),
+  genre: text("genre"),
+  year: integer("year"),
+  isFeatured: boolean("is_featured").default(true),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertAdminPickSchema = createInsertSchema(adminPicks);
+
+export type InsertAdminPick = z.infer<typeof insertAdminPickSchema>;
+export type AdminPick = typeof adminPicks.$inferSelect;
