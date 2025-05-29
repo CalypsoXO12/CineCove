@@ -103,7 +103,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Query parameter is required" });
       }
 
-      const apiKey = process.env.TMDB_API_KEY || process.env.VITE_TMDB_API_KEY || "demo_key";
+      const apiKey = process.env.TMDB_API_KEY;
       const endpoint = type === "tv" ? "tv" : "movie";
       const url = `https://api.themoviedb.org/3/search/${endpoint}?api_key=${apiKey}&query=${encodeURIComponent(query as string)}`;
       

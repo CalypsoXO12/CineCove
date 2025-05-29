@@ -306,7 +306,7 @@ export function AddMediaModal({ open, onOpenChange }: AddMediaModalProps) {
               <Button
                 type="submit"
                 disabled={createMutation.isPending}
-                className="flex-1 gradient-warm text-[hsl(var(--dark-primary))] font-medium hover:shadow-lg"
+                className="flex-1 gradient-purple text-white font-medium hover:shadow-lg"
               >
                 {createMutation.isPending ? "Adding..." : "Add Media"}
               </Button>

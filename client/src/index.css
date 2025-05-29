@@ -141,8 +141,8 @@
 
 /* Status badges */
 .status-watching {
-  background: linear-gradient(135deg, hsl(var(--warm-amber)) 0%, hsl(var(--warm-orange)) 100%);
-  color: hsl(var(--dark-primary));
+  background: linear-gradient(135deg, hsl(var(--purple-primary)) 0%, hsl(var(--purple-secondary)) 100%);
+  color: white;
 }
 
 .status-completed {
