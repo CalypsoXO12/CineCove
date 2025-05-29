@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Plus, TrendingUp, Star, Calendar, Clock } from "lucide-react";
+import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { CineNestLogo } from "@/components/CineNestLogo";
 import { MediaCard } from "@/components/MediaCard";
@@ -40,6 +41,17 @@ export default function Home() {
             <CineNestLogo />
             
             <div className="flex items-center space-x-4">
+              <nav className="hidden md:flex items-center space-x-6">
+                <Link href="/" className="text-purple-400 font-medium border-b-2 border-purple-400 pb-1">
+                  Home
+                </Link>
+                <Link href="/dashboard" className="text-muted-foreground hover:text-purple-400 transition-colors">
+                  Dashboard
+                </Link>
+                <Link href="/admin" className="text-muted-foreground hover:text-purple-400 transition-colors">
+                  Admin
+                </Link>
+              </nav>
               <Button 
                 onClick={() => setAddModalOpen(true)}
                 className="gradient-purple text-white font-medium transition-all hover:shadow-lg flex items-center space-x-2"

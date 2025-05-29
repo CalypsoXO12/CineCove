@@ -220,6 +220,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Delete announcement
+  app.delete("/api/announcements/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const success = await storage.deleteAnnouncement(id);
+      if (!success) {
+        return res.status(404).json({ message: "Announcement not found" });
+      }
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete announcement" });
+    }
+  });
+
   // Get upcoming releases
   app.get("/api/upcoming", async (req, res) => {
     try {
@@ -241,6 +255,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid data", errors: error.errors });
       }
       res.status(500).json({ message: "Failed to create upcoming release" });
+    }
+  });
+
+  // Delete upcoming release
+  app.delete("/api/upcoming/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const success = await storage.deleteUpcomingRelease(id);
+      if (!success) {
+        return res.status(404).json({ message: "Upcoming release not found" });
+      }
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete upcoming release" });
     }
   });
 

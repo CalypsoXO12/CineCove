@@ -48,9 +48,9 @@ export default function Dashboard() {
               <a href="#" className="text-muted-foreground hover:text-purple-400 transition-colors">
                 Browse
               </a>
-              <a href="#" className="text-muted-foreground hover:text-purple-400 transition-colors">
-                Settings
-              </a>
+              <Link href="/admin" className="text-muted-foreground hover:text-purple-400 transition-colors">
+                Admin
+              </Link>
             </nav>
 
             {/* User Actions */}
