@@ -30,6 +30,8 @@ export default function AdminPanel({ user }: AdminPanelProps) {
     isHighlighted: false
   });
 
+  const [adminPickDialogOpen, setAdminPickDialogOpen] = useState(false);
+
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -81,6 +83,16 @@ export default function AdminPanel({ user }: AdminPanelProps) {
     queryFn: async () => {
       const res = await fetch("/api/media");
       if (!res.ok) throw new Error("Failed to fetch media items");
+      return res.json();
+    }
+  });
+
+  // Fetch admin picks
+  const { data: adminPicks = [], error: adminPicksError } = useQuery({
+    queryKey: ["/api/admin-picks"],
+    queryFn: async () => {
+      const res = await fetch("/api/admin-picks");
+      if (!res.ok) throw new Error("Failed to fetch admin picks");
       return res.json();
     }
   });
@@ -175,6 +187,58 @@ export default function AdminPanel({ user }: AdminPanelProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/upcoming"] });
       toast({ title: "Upcoming release deleted successfully" });
+    }
+  });
+
+  // Create admin pick
+  const createAdminPickMutation = useMutation({
+    mutationFn: async (mediaId: number) => {
+      const mediaItem = mediaItems.find(item => item.id === mediaId);
+      if (!mediaItem) throw new Error("Media item not found");
+
+      const adminPickData = {
+        title: mediaItem.title,
+        type: mediaItem.type,
+        posterUrl: mediaItem.posterUrl,
+        tmdbId: mediaItem.tmdbId,
+        jikanId: mediaItem.jikanId,
+        genre: mediaItem.genre,
+        year: mediaItem.year,
+        isFeatured: true
+      };
+
+      const response = await fetch("/api/admin-picks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(adminPickData)
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to create admin pick: ${errorText}`);
+      }
+
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin-picks"] });
+      setAdminPickDialogOpen(false);
+      toast({ title: "Admin pick created successfully" });
+    },
+    onError: (error) => {
+      toast({ title: "Failed to create admin pick", description: error.message, variant: "destructive" });
+    }
+  });
+
+  // Delete admin pick
+  const deleteAdminPickMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await fetch(`/api/admin-picks/${id}`, { method: "DELETE" });
+      if (!response.ok) throw new Error("Failed to delete admin pick");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin-picks"] });
+      toast({ title: "Admin pick deleted successfully" });
     }
   });
 
@@ -425,25 +489,76 @@ export default function AdminPanel({ user }: AdminPanelProps) {
                 <Star className="h-6 w-6" />
                 <span>Manage Admin Picks</span>
               </h2>
+              <Dialog open={adminPickDialogOpen} onOpenChange={setAdminPickDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button className="bg-amber-500 hover:bg-amber-600 text-black">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Admin Pick
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl">
+                  <DialogHeader>
+                    <DialogTitle>Select Media for Admin Pick</DialogTitle>
+                  </DialogHeader>
+                  <div className="max-h-96 overflow-y-auto">
+                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                      {mediaItems.map((item: MediaItem) => (
+                        <Card key={item.id} className="cursor-pointer hover:bg-accent" onClick={() => createAdminPickMutation.mutate(item.id)}>
+                          <CardContent className="p-4">
+                            <div className="flex space-x-4">
+                              <img 
+                                src={item.posterUrl || "/placeholder-poster.jpg"} 
+                                alt={item.title}
+                                className="w-16 h-24 object-cover rounded"
+                              />
+                              <div className="flex-1">
+                                <h3 className="font-semibold text-foreground text-sm">{item.title}</h3>
+                                <p className="text-muted-foreground text-xs capitalize">{item.type}</p>
+                                <p className="text-muted-foreground text-xs capitalize">{item.status}</p>
+                                {item.rating && (
+                                  <p className="text-purple-400 text-xs">★ {item.rating}/10</p>
+                                )}
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {mediaItems.map((item: MediaItem) => (
-                <Card key={item.id}>
+              {adminPicks.map((pick: any) => (
+                <Card key={pick.id}>
                   <CardContent className="p-4">
                     <div className="flex space-x-4">
                       <img 
-                        src={item.posterUrl || "/placeholder-poster.jpg"} 
-                        alt={item.title}
+                        src={pick.posterUrl || "/placeholder-poster.jpg"} 
+                        alt={pick.title}
                         className="w-16 h-24 object-cover rounded"
                       />
                       <div className="flex-1">
-                        <h3 className="font-semibold text-foreground text-sm">{item.title}</h3>
-                        <p className="text-muted-foreground text-xs capitalize">{item.type}</p>
-                        <p className="text-muted-foreground text-xs capitalize">{item.status}</p>
-                        {item.rating && (
-                          <p className="text-purple-400 text-xs">★ {item.rating}/10</p>
+                        <h3 className="font-semibold text-foreground text-sm">{pick.title}</h3>
+                        <p className="text-muted-foreground text-xs capitalize">{pick.type}</p>
+                        {pick.year && (
+                          <p className="text-muted-foreground text-xs">{pick.year}</p>
                         )}
+                        <div className="flex items-center justify-between mt-2">
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200">
+                            <Star className="h-3 w-3 mr-1" />
+                            Featured
+                          </span>
+                          <Button
+                            onClick={() => deleteAdminPickMutation.mutate(pick.id)}
+                            variant="outline"
+                            size="sm"
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </CardContent>
