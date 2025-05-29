@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { CineNestLogo } from "@/components/CineNestLogo";
+import { CineCoveLogo } from "@/components/CineNestLogo";
 import type { Announcement, UpcomingRelease, MediaItem } from "@shared/schema";
 
 export default function AdminPanel() {
@@ -160,7 +160,7 @@ export default function AdminPanel() {
         <Card className="w-full max-w-md mx-4">
           <CardHeader className="text-center">
             <div className="flex justify-center mb-4">
-              <CineNestLogo />
+              <CineCoveLogo />
             </div>
             <CardTitle>Admin Login</CardTitle>
           </CardHeader>
@@ -207,7 +207,7 @@ export default function AdminPanel() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-4">
-              <CineNestLogo />
+              <CineCoveLogo />
               <h1 className="text-xl font-bold text-foreground">Admin Panel</h1>
             </div>
             <Button 

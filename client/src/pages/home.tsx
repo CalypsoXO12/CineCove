@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Plus, TrendingUp, Star, Calendar, Clock } from "lucide-react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { CineNestLogo } from "@/components/CineNestLogo";
+import { CineCoveLogo } from "@/components/CineNestLogo";
 import { MediaCard } from "@/components/MediaCard";
 import { AddMediaModal } from "@/components/AddMediaModal";
 import { mediaApi } from "@/lib/api";
@@ -38,7 +38,7 @@ export default function Home() {
       <header className="bg-card/80 backdrop-blur-sm border-b border-border sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <CineNestLogo />
+            <CineCoveLogo />
             
             <div className="flex items-center space-x-4">
               <nav className="hidden md:flex items-center space-x-6">
