@@ -1,5 +1,6 @@
 import express, { type Request, Response, NextFunction } from "express";
 import path from "path";
+import fs from "fs";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { storage } from "./storage";
@@ -331,20 +332,48 @@ app.post("/api/auth/register", async (req, res) => {
   }
 });
 
-// Static files in production
+// Serve frontend - both development and production
 if (process.env.NODE_ENV === "production") {
-  // Serve static files from dist directory
+  // Production: serve from dist
   app.use(express.static(path.join(process.cwd(), "dist")));
-  
-  // Handle client-side routing
   app.get("*", (req, res) => {
-    // Don't handle API routes or health check
     if (req.path.startsWith("/api/") || req.path === "/health") {
       return res.status(404).json({ message: "Route not found" });
     }
-    // Serve index.html for all other routes
     res.sendFile(path.join(process.cwd(), "dist", "index.html"));
   });
+} else {
+  // Development: proxy to Vite dev server or serve built files if available
+  const distPath = path.join(process.cwd(), "dist", "public");
+  if (fs.existsSync(distPath)) {
+    app.use(express.static(distPath));
+    app.get("*", (req, res) => {
+      if (req.path.startsWith("/api/") || req.path === "/health") {
+        return res.status(404).json({ message: "Route not found" });
+      }
+      res.sendFile(path.join(distPath, "index.html"));
+    });
+  } else {
+    // Fallback for frontend routes in development
+    app.get("*", (req, res) => {
+      if (req.path.startsWith("/api/") || req.path === "/health") {
+        return res.status(404).json({ message: "Route not found" });
+      }
+      res.status(200).send(`
+        <!DOCTYPE html>
+        <html>
+        <head><title>CineCove - Dev Mode</title></head>
+        <body>
+        <div id="root"></div>
+        <script>
+          console.log('Frontend build not found. Run: npm run build first');
+          document.getElementById('root').innerHTML = '<h1>Run: npm run build</h1><p>Then refresh this page.</p>';
+        </script>
+        </body>
+        </html>
+      `);
+    });
+  }
 }
 
 // Initialize
