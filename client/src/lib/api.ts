@@ -60,13 +60,33 @@ export const mediaApi = {
 
   // Search TMDB for movies/TV
   searchTMDB: async (query: string, type: 'movie' | 'tv' = 'movie'): Promise<TMDBSearchResult[]> => {
-    const response = await apiRequest('GET', `/api/search/tmdb?query=${encodeURIComponent(query)}&type=${type}`);
-    return response.json();
+    try {
+      const response = await fetch(`/api/search/tmdb?query=${encodeURIComponent(query)}&type=${type}`);
+      if (!response.ok) {
+        console.error(`TMDB search failed: ${response.status} ${response.statusText}`);
+        return [];
+      }
+      const data = await response.json();
+      return Array.isArray(data) ? data : [];
+    } catch (error) {
+      console.error('TMDB search error:', error);
+      return [];
+    }
   },
 
   // Search Jikan for anime
   searchJikan: async (query: string): Promise<JikanSearchResult[]> => {
-    const response = await apiRequest('GET', `/api/search/jikan?query=${encodeURIComponent(query)}`);
-    return response.json();
+    try {
+      const response = await fetch(`/api/search/jikan?query=${encodeURIComponent(query)}`);
+      if (!response.ok) {
+        console.error(`Jikan search failed: ${response.status} ${response.statusText}`);
+        return [];
+      }
+      const data = await response.json();
+      return Array.isArray(data) ? data : [];
+    } catch (error) {
+      console.error('Jikan search error:', error);
+      return [];
+    }
   },
 };

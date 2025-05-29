@@ -244,6 +244,10 @@ export default function AdminPanel({ user }: AdminPanelProps) {
 
   const handleCreateAnnouncement = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user?.id) {
+      toast({ title: "User not authenticated", variant: "destructive" });
+      return;
+    }
     createAnnouncementMutation.mutate({ ...announcementForm, adminId: user.id });
   };
 
