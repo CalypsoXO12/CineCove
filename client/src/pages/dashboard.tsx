@@ -192,7 +192,49 @@ export default function Dashboard({ user }: DashboardProps) {
             <div className="flex-1">
               <div className="grid mobile-card-grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4 mb-8">
                 {mediaItems.map((item: MediaItem) => (
-                  <MediaCard key={item.id} item={item} />
+                  <div key={item.id} className="group relative">
+                    <MediaCard item={item} />
+                    
+                    {/* Quick Action Overlay */}
+                    <div className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-2xl flex flex-col items-center justify-center space-y-2">
+                      {/* Status Selector */}
+                      <Select
+                        value={item.status}
+                        onValueChange={(newStatus) => handleStatusUpdate(item, newStatus)}
+                      >
+                        <SelectTrigger className="w-32 h-8 text-xs bg-background/90">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="watching">Watching</SelectItem>
+                          <SelectItem value="completed">Completed</SelectItem>
+                          <SelectItem value="planned">Plan to Watch</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      
+                      {/* Action Buttons */}
+                      <div className="flex space-x-2">
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => handleEditItem(item)}
+                          className="h-8 text-xs"
+                        >
+                          <Edit className="h-3 w-3 mr-1" />
+                          Edit
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => deleteMediaMutation.mutate(item.id)}
+                          className="h-8 text-xs"
+                        >
+                          <Trash2 className="h-3 w-3 mr-1" />
+                          Delete
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
                 ))}
               </div>
               
@@ -243,6 +285,87 @@ export default function Dashboard({ user }: DashboardProps) {
 
       {/* Add Media Modal */}
       <AddMediaModal open={addModalOpen} onOpenChange={setAddModalOpen} />
+
+      {/* Edit Media Dialog */}
+      <Dialog open={editModalOpen} onOpenChange={setEditModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit {selectedItem?.title}</DialogTitle>
+          </DialogHeader>
+          {selectedItem && (
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="status">Status</Label>
+                <Select
+                  value={selectedItem.status}
+                  onValueChange={(value) => setSelectedItem({ ...selectedItem, status: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="watching">Watching</SelectItem>
+                    <SelectItem value="completed">Completed</SelectItem>
+                    <SelectItem value="planned">Plan to Watch</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div>
+                <Label htmlFor="rating">Rating (1-10)</Label>
+                <Input
+                  id="rating"
+                  type="number"
+                  min="1"
+                  max="10"
+                  value={selectedItem.rating || ""}
+                  onChange={(e) => setSelectedItem({ 
+                    ...selectedItem, 
+                    rating: e.target.value ? parseInt(e.target.value) : null 
+                  })}
+                />
+              </div>
+              
+              <div>
+                <Label htmlFor="notes">Notes</Label>
+                <Input
+                  id="notes"
+                  value={selectedItem.notes || ""}
+                  onChange={(e) => setSelectedItem({ 
+                    ...selectedItem, 
+                    notes: e.target.value 
+                  })}
+                  placeholder="Personal notes..."
+                />
+              </div>
+              
+              <div className="flex space-x-2 pt-4">
+                <Button
+                  onClick={() => updateMediaMutation.mutate({
+                    id: selectedItem.id,
+                    updates: {
+                      status: selectedItem.status,
+                      rating: selectedItem.rating,
+                      notes: selectedItem.notes
+                    }
+                  })}
+                  disabled={updateMediaMutation.isPending}
+                  className="flex-1"
+                >
+                  {updateMediaMutation.isPending ? "Saving..." : "Save Changes"}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setEditModalOpen(false)}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
