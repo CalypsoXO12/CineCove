@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Plus, User } from "lucide-react";
+import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { CineNestLogo } from "@/components/CineNestLogo";
 import { SearchFilters } from "@/components/SearchFilters";
@@ -38,9 +39,12 @@ export default function Dashboard() {
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
-              <a href="#" className="text-purple-400 font-medium border-b-2 border-purple-400 pb-1">
+              <Link href="/" className="text-muted-foreground hover:text-purple-400 transition-colors">
+                Home
+              </Link>
+              <Link href="/dashboard" className="text-purple-400 font-medium border-b-2 border-purple-400 pb-1">
                 Dashboard
-              </a>
+              </Link>
               <a href="#" className="text-muted-foreground hover:text-purple-400 transition-colors">
                 Browse
               </a>
@@ -162,18 +166,18 @@ export default function Dashboard() {
       {/* Mobile Bottom Navigation */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-md border-t border-border z-40 safe-area-inset-bottom">
         <div className="flex justify-around py-3 px-2">
-          <button className="flex flex-col items-center py-2 px-3 text-purple-400 mobile-touch rounded-xl bg-purple-400/10">
+          <Link href="/" className="flex flex-col items-center py-2 px-3 text-muted-foreground mobile-touch rounded-xl hover:bg-muted/50 transition-colors">
             <div className="text-lg mb-1">🏠</div>
-            <span className="text-xs font-medium">Home</span>
-          </button>
+            <span className="text-xs">Home</span>
+          </Link>
           <button className="flex flex-col items-center py-2 px-3 text-muted-foreground mobile-touch rounded-xl hover:bg-muted/50 transition-colors">
             <div className="text-lg mb-1">🔍</div>
             <span className="text-xs">Browse</span>
           </button>
-          <button className="flex flex-col items-center py-2 px-3 text-muted-foreground mobile-touch rounded-xl hover:bg-muted/50 transition-colors">
+          <Link href="/dashboard" className="flex flex-col items-center py-2 px-3 text-purple-400 mobile-touch rounded-xl bg-purple-400/10">
             <div className="text-lg mb-1">📝</div>
-            <span className="text-xs">List</span>
-          </button>
+            <span className="text-xs font-medium">List</span>
+          </Link>
           <button className="flex flex-col items-center py-2 px-3 text-muted-foreground mobile-touch rounded-xl hover:bg-muted/50 transition-colors">
             <div className="text-lg mb-1">👤</div>
             <span className="text-xs">Profile</span>
