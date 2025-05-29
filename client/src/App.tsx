@@ -1,5 +1,5 @@
 import { Switch, Route } from "wouter";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -26,12 +26,28 @@ function App() {
   const [user, setUser] = useState<{ id: number; isAdmin: boolean } | null>(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
 
+  // Load user from localStorage on app start
+  useEffect(() => {
+    const savedUser = localStorage.getItem('cinecove_user');
+    if (savedUser) {
+      try {
+        const userData = JSON.parse(savedUser);
+        setUser(userData);
+      } catch (error) {
+        localStorage.removeItem('cinecove_user');
+      }
+    }
+  }, []);
+
   const handleLoginSuccess = (userId: number, isAdmin: boolean) => {
-    setUser({ id: userId, isAdmin });
+    const userData = { id: userId, isAdmin };
+    setUser(userData);
+    localStorage.setItem('cinecove_user', JSON.stringify(userData));
   };
 
   const handleLogout = () => {
     setUser(null);
+    localStorage.removeItem('cinecove_user');
   };
 
   const handleShowLogin = () => {
