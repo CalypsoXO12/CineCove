@@ -1,4 +1,6 @@
 import { mediaItems, type MediaItem, type InsertMediaItem } from "@shared/schema";
+import { db } from "./db";
+import { eq, desc, and, like, or } from "drizzle-orm";
 
 export interface IStorage {
   getMediaItems(): Promise<MediaItem[]>;
@@ -9,6 +11,73 @@ export interface IStorage {
   getMediaItemsByStatus(status: string): Promise<MediaItem[]>;
   getMediaItemsByType(type: string): Promise<MediaItem[]>;
   searchMediaItems(query: string): Promise<MediaItem[]>;
+}
+
+export class DatabaseStorage implements IStorage {
+  async getMediaItems(): Promise<MediaItem[]> {
+    const items = await db.select().from(mediaItems).orderBy(desc(mediaItems.createdAt));
+    return items;
+  }
+
+  async getMediaItem(id: number): Promise<MediaItem | undefined> {
+    const [item] = await db.select().from(mediaItems).where(eq(mediaItems.id, id));
+    return item || undefined;
+  }
+
+  async createMediaItem(insertItem: InsertMediaItem): Promise<MediaItem> {
+    const [item] = await db
+      .insert(mediaItems)
+      .values(insertItem)
+      .returning();
+    return item;
+  }
+
+  async updateMediaItem(id: number, updates: Partial<InsertMediaItem>): Promise<MediaItem | undefined> {
+    const [item] = await db
+      .update(mediaItems)
+      .set(updates)
+      .where(eq(mediaItems.id, id))
+      .returning();
+    return item || undefined;
+  }
+
+  async deleteMediaItem(id: number): Promise<boolean> {
+    const result = await db.delete(mediaItems).where(eq(mediaItems.id, id));
+    return (result.rowCount || 0) > 0;
+  }
+
+  async getMediaItemsByStatus(status: string): Promise<MediaItem[]> {
+    const items = await db
+      .select()
+      .from(mediaItems)
+      .where(eq(mediaItems.status, status))
+      .orderBy(desc(mediaItems.createdAt));
+    return items;
+  }
+
+  async getMediaItemsByType(type: string): Promise<MediaItem[]> {
+    const items = await db
+      .select()
+      .from(mediaItems)
+      .where(eq(mediaItems.type, type))
+      .orderBy(desc(mediaItems.createdAt));
+    return items;
+  }
+
+  async searchMediaItems(query: string): Promise<MediaItem[]> {
+    const items = await db
+      .select()
+      .from(mediaItems)
+      .where(
+        or(
+          like(mediaItems.title, `%${query}%`),
+          like(mediaItems.genre, `%${query}%`),
+          like(mediaItems.notes, `%${query}%`)
+        )
+      )
+      .orderBy(desc(mediaItems.createdAt));
+    return items;
+  }
 }
 
 export class MemStorage implements IStorage {
@@ -176,4 +245,4 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
