@@ -180,6 +180,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Test endpoint
+  app.get("/api/test", (req, res) => {
+    res.json({ success: true, message: "Server is working" });
+  });
+
   // User login
   app.post("/api/login", async (req, res) => {
     try {
