@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertMediaItemSchema, insertAnnouncementSchema, insertUpcomingReleaseSchema, type TMDBSearchResult, type JikanSearchResult } from "@shared/schema";
+import { insertMediaItemSchema, insertAnnouncementSchema, insertUpcomingReleaseSchema, insertAdminPickSchema, type TMDBSearchResult, type JikanSearchResult } from "@shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -363,11 +363,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/admin-picks", async (req, res) => {
     try {
-      const pick = await storage.createAdminPick(req.body);
+      console.log("Creating admin pick with data:", req.body);
+      
+      if (!req.body || typeof req.body !== 'object') {
+        return res.status(400).json({ message: "Invalid request body" });
+      }
+
+      const validatedData = insertAdminPickSchema.parse(req.body);
+      console.log("Validated admin pick data:", validatedData);
+      
+      const pick = await storage.createAdminPick(validatedData);
+      console.log("Created admin pick:", pick);
+      
       res.json(pick);
     } catch (error) {
       console.error("Create admin pick error:", error);
-      res.status(500).json({ message: "Failed to create admin pick" });
+      
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ 
+          message: "Invalid data", 
+          errors: error.errors.map(e => ({ path: e.path, message: e.message }))
+        });
+      }
+      
+      res.status(500).json({ 
+        message: "Failed to create admin pick",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
     }
   });
 

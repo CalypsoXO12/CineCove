@@ -3,6 +3,7 @@ import {
   users, 
   announcements, 
   upcomingReleases,
+  adminPicks,
   type MediaItem, 
   type InsertMediaItem,
   type User,
@@ -10,7 +11,9 @@ import {
   type Announcement,
   type InsertAnnouncement,
   type UpcomingRelease,
-  type InsertUpcomingRelease
+  type InsertUpcomingRelease,
+  type AdminPick,
+  type InsertAdminPick
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, like, or } from "drizzle-orm";

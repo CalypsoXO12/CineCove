@@ -87,13 +87,13 @@ export default function AdminPanel({ user }: AdminPanelProps) {
 
   // Create announcement
   const createAnnouncementMutation = useMutation({
-    mutationFn: async (data: { title: string; content: string }) => {
+    mutationFn: async (data: { title: string; content: string; adminId: number }) => {
       console.log("Creating announcement with data:", data);
       
       const payload = {
-        title: data.title.trim(),
-        content: data.content.trim(),
-        adminId: user?.id || 1
+        title: data.title,
+        content: data.content,
+        adminId: data.adminId
       };
       
       console.log("Sending payload:", payload);
